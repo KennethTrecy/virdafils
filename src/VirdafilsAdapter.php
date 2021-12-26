@@ -6,6 +6,7 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
 use League\Flysystem\Util\MimeType;
 use League\Flysystem\RootViolationException;
+use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
 use KennethTrecy\Virdafils\Node\Directory;
@@ -349,6 +350,24 @@ class VirdafilsAdapter implements AdapterInterface {
 		$resolved_path = PathHelper::resolve($path, $this->configuration);
 
 		return route("verdafils.stream", [
+			"path" => ltrim($resolved_path, PathHelper::ABSOLUTE_ROOT)
+		]);
+	}
+
+	/**
+	 * Generates a temporary URL so the file can be accessed.
+	 *
+	 * This is not required by the adapter interface but necessary to make the static method
+	 * `temporaryURL()` of `\Illuminate\Support\Facades\Storage` work.
+	 *
+	 * @param string $path
+	 * @param \DateTimeInterface $expiration
+	 * @return string
+	 */
+	public function getTemporaryUrl(string $path, $expiration) {
+		$resolved_path = PathHelper::resolve($path, $this->configuration);
+
+		return URL::temporarySignedRoute("verdafils.temporary.stream", $expiration, [
 			"path" => ltrim($resolved_path, PathHelper::ABSOLUTE_ROOT)
 		]);
 	}

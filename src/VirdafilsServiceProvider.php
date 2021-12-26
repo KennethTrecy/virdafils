@@ -3,6 +3,7 @@
 namespace KennethTrecy\Virdafils;
 
 use League\Flysystem\Filesystem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +20,14 @@ class VirdafilsServiceProvider extends ServiceProvider {
 			Route::get("/storage/{path}", function(string $path) {
 				return Storage::download($path);
 			})->name("verdafils.stream");
+
+			Route::get("/temporary/storage/{path}", function(Request $request, string $path) {
+				if ($request->hasValidSignature()) {
+					return Storage::download($path);
+				}
+
+				abort(401);
+			})->name("verdafils.temporary.stream");
 		});
 	}
 }

@@ -4,6 +4,7 @@ namespace Tests\Integration;
 
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\RootViolationException;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
@@ -126,6 +127,18 @@ class FileTest extends TestCase {
 		$url = Storage::url($path);
 
 		$this->assertEquals(route("verdafils.stream", [
+			"path" => ltrim($path, PathHelper::ABSOLUTE_ROOT)
+		]), $url);
+	}
+
+	public function testRootTextTemporaryUrl() {
+		$path = "/present.txt";
+		$present_file = File::factory()->setPath($path)->create();
+		$expiration = now()->addSeconds(1);
+
+		$url = Storage::temporaryUrl($path, $expiration);
+
+		$this->assertEquals(URL::temporarySignedRoute("verdafils.temporary.stream", $expiration, [
 			"path" => ltrim($path, PathHelper::ABSOLUTE_ROOT)
 		]), $url);
 	}
