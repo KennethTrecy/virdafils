@@ -214,7 +214,21 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function rename($old_path, $new_path) {
+		$path_parts = PathHelper::resolvedSplit($old_path, $this->configuration);
 
+		// TODO: Allow rename for directories
+		return $this->whenFileAsPartsExists($path_parts, function ($file) use ($new_path) {
+			[
+				$directory_path,
+				$filename
+			] = PathHelper::resolvedSplitDirectoryAndBase($new_path, $this->configuration);
+
+			$directory = $this->findOrCreateDirectory($directory_path, $this->configuration);
+			$file->parentDirectory()->associate($directory);
+			$file->name = $filename;
+
+			return $file->save();
+		});
 	}
 
 	public function copy($old_path, $new_path) {
