@@ -100,6 +100,44 @@ class VirdafilsAdapter implements AdapterInterface {
 
 	public function deleteDir($path) {
 
+	}
+
+	protected function whenDirectoryExists($path, $present_closure, $absent_closure = null) {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+
+		return $this->whenDirectoryAsPartsExists($path_parts, $present_closure, $absent_closure);
+	}
+
+	protected function whenFileExists($path, $present_closure, $absent_closure = null) {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+
+		return $this->whenFileAsPartsExists($path_parts, $present_closure, $absent_closure);
+	}
+
+	protected function whenDirectoryAsPartsExists(
+		$resolved_path_parts,
+		$present_closure,
+		$absent_closure = null
+	) {
+		return $this->whenModelExists(
+			$resolved_path_parts,
+			Directory::navigateByPathParts($resolved_path_parts),
+			$present_closure,
+			$absent_closure);
+	}
+
+	protected function whenFileAsPartsExists(
+		$resolved_path_parts,
+		$present_closure,
+		$absent_closure = null
+	) {
+		return $this->whenModelExists(
+			$resolved_path_parts,
+			File::navigateByPathParts($resolved_path_parts),
+			$present_closure,
+			$absent_closure);
+	}
+
 	protected function whenModelExists(
 		$resolved_path_parts,
 		$builder,
