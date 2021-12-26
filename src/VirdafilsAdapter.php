@@ -64,7 +64,56 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function listContents($directory = "", $recursive = false) {
+		if ($directory === "") $directory = "/";
 
+		return $this->whenDirectoryExists(
+			$directory,
+			function($directory, $resolved_path, $resolved_path_parts) use ($recursive) {
+				$directories = collect([ [ $resolved_path_parts, $directory ] ]);
+				$result = collect([]);
+
+				while($directories->count() > 0) {
+					[ $local_path_parts, $directory ] = $directories->shift();
+					$child_directories = $directory->childDirectories()->get()
+						->map(function($child_directory) use (
+							$recursive,
+							$local_path_parts,
+							&$directories
+						) {
+							$path_parts = [ ...$local_path_parts, $child_directory->name ];
+
+							if ($recursive) {
+								$directories->push([ $path_parts, $child_directory ]);
+							}
+
+							return [
+								"type" => "dir",
+								"path" => PathHelper::join($path_parts),
+								"timestamp" => $child_directory->updated_at->timestamp
+							];
+						});
+
+					$child_files = $directory
+						->files()
+						->get()
+						->map(function($file) use ($local_path_parts) {
+							$name = $file->name;
+							$metadata = [
+								"type" => "file",
+								"path" => PathHelper::join([ ...$local_path_parts, $name ]),
+								"size" => $file->content_size,
+								"timestamp" => $file->updated_at->timestamp
+							];
+
+							return $metadata;
+						});
+
+					$result = $result->merge($child_directories)->merge($child_files);
+				}
+
+				return $result->toArray();
+			},
+			function() { return []; });
 	}
 
 	public function getVisibility($path) {
