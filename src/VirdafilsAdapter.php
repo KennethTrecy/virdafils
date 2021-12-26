@@ -96,7 +96,10 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function createDir($path, Config $configuration) {
+		$this->setFallbackConfiguration($configuration);
 
+		$directory_parts = PathHelper::resolvedSplit($path, $configuration);
+		return $this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
 	}
 
 	public function deleteDir($path) {
