@@ -16,7 +16,8 @@
 		"php": "^7.3|^8.0",
 		"kennethtrecy/elomocato": "0.1.0-RC2",
 		"illuminate/contracts": "^8.77",
-		"illuminate/support": "^8.77"
+		"illuminate/support": "^8.77",
+		"league/flysystem": "1.1"
 	},
 	"repositories": [
 		{
