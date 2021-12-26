@@ -141,6 +141,13 @@ class VirdafilsAdapter implements AdapterInterface {
 		];
 	}
 
+	protected function setFallbackConfiguration(Config $configuration) {
+		// Prevent setting fallback to itself
+		if ($configuration !== $this->configuration) {
+			$configuration->setFallback($this->configuration);
+		}
+	}
+
 	protected function whenDirectoryExists($path, $present_closure, $absent_closure = null) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
