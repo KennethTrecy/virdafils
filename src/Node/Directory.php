@@ -11,4 +11,8 @@ class Directory extends AbstractNodeModel {
 	public function childDirectories() {
 		return $this->hasMany(Directory::class, "directory_id");
 	}
+
+	public function files() {
+		return $this->hasMany(File::class);
+	}
 }
