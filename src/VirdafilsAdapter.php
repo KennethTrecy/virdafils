@@ -100,5 +100,23 @@ class VirdafilsAdapter implements AdapterInterface {
 
 	public function deleteDir($path) {
 
+	protected function whenModelExists(
+		$resolved_path_parts,
+		$builder,
+		$present_closure,
+		$absent_closure = null
+	) {
+		$model = $builder->first();
+		if (is_null($model)) {
+			if (is_null($absent_closure)) {
+				// TODO: Throw error when file/directory not found
+				return false;
+			} else {
+				return $absent_closure($resolved_path_parts, $builder);
+			}
+		} else {
+			$resolved_path =  PathHelper::join($resolved_path_parts);
+			return $present_closure($model, $resolved_path, $resolved_path_parts);
+		}
 	}
 }
