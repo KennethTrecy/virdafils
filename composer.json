@@ -12,6 +12,16 @@
 			"role": "Developer"
 		}
 	],
+	"require": {
+		"php": "^7.3|^8.0",
+		"kennethtrecy/elomocato": "0.1.0-RC2"
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@repo.kennethtrecy:KennethTrecy/elomocato.git"
+		}
+	],
 	"minimum-stability": "dev",
 	"prefer-stable": true
 }
