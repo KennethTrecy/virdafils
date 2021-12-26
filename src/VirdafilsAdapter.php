@@ -61,11 +61,36 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function read($path) {
+		$file = $this->readStream($path);
 
+		if (is_array($file)) {
+			$contents = stream_get_contents($file["stream"]);
+
+			$file["contents"] = $contents;
+
+			if (fclose($file["stream"]) === false) {
+				return false;
+			}
+
+			unset($file["stream"]);
+		}
+
+		return $file;
 	}
 
 	public function readStream($path) {
+		return $this->whenFileExists($path, function ($file, $resolved_path) {
+			$contents = $file->contents;
+			if (is_string($contents)) {
+				$contents = GeneralHelper::createWrittenMemoryStream($contents);
+			}
 
+			return [
+				"type" => "file",
+				"path" => $resolved_path,
+				"stream" => $contents
+			];
+		});
 	}
 
 	public function write($path, $contents, Config $configuration) {
