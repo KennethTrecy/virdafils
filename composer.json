@@ -11,5 +11,7 @@
 			"homepage": "http://repo.local/KennethTrecy",
 			"role": "Developer"
 		}
-	]
+	],
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }
