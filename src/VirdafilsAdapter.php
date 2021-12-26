@@ -305,7 +305,9 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function delete($path) {
-
+		return $this->whenFileExists($path, function ($file, $resolved_path) {
+			return $file->delete();
+		}, function() { return false; });
 	}
 
 	public function createDir($path, Config $configuration) {
