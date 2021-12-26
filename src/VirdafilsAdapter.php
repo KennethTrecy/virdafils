@@ -4,6 +4,7 @@ namespace KennethTrecy\Virdafils;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\RootViolationException;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
 use KennethTrecy\Virdafils\Node\Directory;
