@@ -99,7 +99,22 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function deleteDir($path) {
+		$directory_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
+		if ($directory_parts === PathHelper::resolvedSplit(
+			$this->configuration->get("root"),
+			new Config([ "root" => "/"])
+		)) {
+			throw new RootViolationException();
+		}
+
+		$directory = Directory::navigateByPathParts($directory_parts, $this->configuration)->first();
+
+		if ($directory === null) {
+			return false;
+		}
+
+		return $directory->delete();
 	}
 
 	protected function whenDirectoryExists($path, $present_closure, $absent_closure = null) {
