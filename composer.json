@@ -1,0 +1,15 @@
+{
+	"name": "kennethtrecy/virdafils",
+	"type": "library",
+	"description": "A Flysystem storage driver for virtual databased filesystem",
+	"keywords": ["database", "filesystem", "storage", "driver", "laravel", "package"],
+	"homepage": "http://repo.local/KennethTrecy/virdafils",
+	"authors": [
+		{
+			"name": "Kenneth Trecy Tobias",
+			"email": "web.kennethtobias@gmail.com",
+			"homepage": "http://repo.local/KennethTrecy",
+			"role": "Developer"
+		}
+	]
+}
