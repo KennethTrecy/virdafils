@@ -8,6 +8,8 @@ use Illuminate\Support\ServiceProvider;
 
 class VirdafilsServiceProvider extends ServiceProvider {
 	public function boot() {
+		$this->loadMigrationsFrom(__DIR__."/../database/migrations");
+
 		Storage::extend("virdafils", function($app, $configuration) {
 			return new Filesystem(new VirdafilsAdapter($configuration));
 		});
