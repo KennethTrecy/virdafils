@@ -117,6 +117,29 @@ class VirdafilsAdapter implements AdapterInterface {
 		return $directory->delete();
 	}
 
+	protected function createDirectoryFromParts($directory_parts, $visibility) {
+		$resolved_path = PathHelper::join($directory_parts);
+
+		$directory = Directory::firstOrCreate([
+			"name" => array_shift($directory_parts),
+			"visibility" => $visibility
+		]);
+
+		foreach ($directory_parts as $directory_name) {
+			$directory = $directory->childDirectories()->firstOrCreate([
+				"name" => $directory_name
+			], [
+				"visibility" => $visibility
+			]);
+		}
+
+		// TODO: Return false if the path is a file
+		return [
+			"path" => $resolved_path,
+			"type" => "dir"
+		];
+	}
+
 	protected function whenDirectoryExists($path, $present_closure, $absent_closure = null) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
