@@ -117,4 +117,13 @@ class FileTest extends TestCase {
 			"contents" => base64_encode($new_content)
 		]);
 	}
+
+	public function testRootTextUrl() {
+		$path = "/present.txt";
+		$present_file = File::factory()->setPath($path)->create();
+
+		$url = Storage::url($path);
+
+		$this->assertEquals("", $url);
+	}
 }
