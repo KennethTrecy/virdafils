@@ -47,6 +47,13 @@
 			"./vendor/bin/phpunit"
 		]
 	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"KennethTrecy\\Virdafils\\VirdafilsServiceProvider"
+			]
+		}
+	},
 	"minimum-stability": "dev",
 	"prefer-stable": true
 }
