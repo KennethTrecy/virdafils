@@ -4,6 +4,8 @@ namespace KennethTrecy\Virdafils\Node;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use League\Flysystem\Config;
+use KennethTrecy\Virdafils\Util\PathHelper;
 
 abstract class AbstractNodeModel extends Model {
 	use HasFactory;
@@ -26,5 +28,15 @@ abstract class AbstractNodeModel extends Model {
 		$target_name = array_pop($resolved_path_parts);
 
 		return $query->where("name", $target_name)->childOf($resolved_path_parts);
+	}
+
+	public function scopePath($query, string $relative_path, Config $configuration = null) {
+		if (is_null($configuration)) {
+			$configuration = new Config([]);
+		}
+
+		$path_parts = PathHelper::resolvedSplit($relative_path, $configuration);
+
+		return $query->navigateByPathParts($path_parts);
 	}
 }
