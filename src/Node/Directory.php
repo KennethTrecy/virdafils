@@ -7,4 +7,8 @@ class Directory extends AbstractNodeModel {
 		"name",
 		"visibility"
 	];
+
+	public function childDirectories() {
+		return $this->hasMany(Directory::class, "directory_id");
+	}
 }
