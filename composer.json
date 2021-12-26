@@ -17,7 +17,8 @@
 		"kennethtrecy/elomocato": "0.1.0-RC2",
 		"illuminate/contracts": "^8.77",
 		"illuminate/support": "^8.77",
-		"league/flysystem": "1.1"
+		"league/flysystem": "1.1",
+		"illuminate/database": "^8.77"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.5",
