@@ -4,6 +4,10 @@ namespace KennethTrecy\Virdafils;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use KennethTrecy\Virdafils\Util\GeneralHelper;
+use KennethTrecy\Virdafils\Util\PathHelper;
+use KennethTrecy\Virdafils\Node\Directory;
+use KennethTrecy\Virdafils\Node\File;
 
 /**
  * For more information, please read the links below.
@@ -20,7 +24,10 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function has($path) {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
+		return Directory::navigateByPathParts($path_parts, $this->configuration)->exists()
+			||	File::navigateByPathParts($path_parts, $this->configuration)->exists();
 	}
 
 	public function getMetadata($path) {
