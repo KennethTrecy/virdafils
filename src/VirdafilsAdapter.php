@@ -275,7 +275,10 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function copy($old_path, $new_path) {
+		// TODO: Allow copy for directories
+		$stream = $this->readStream($old_path)["stream"];
 
+		return (bool) $this->writeStream($new_path, $stream, $this->configuration);
 	}
 
 	public function delete($path) {
