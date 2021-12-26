@@ -33,7 +33,22 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function getMetadata($path) {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+		$path = PathHelper::join($path_parts);
+		$metadata = [ "path" => $path ];
 
+		return $this->whenDirectoryAsPartsExists($path_parts, function($directory) use ($metadata) {
+			$metadata["type"] = "dir";
+			$metadata["timestamp"] = $directory->first()->updated_at->timestamp;
+			return $metadata;
+		}, function($path_parts) use ($metadata) {
+			return $this->whenFileAsPartsExists($path_parts, function($file) use ($metadata) {
+				$metadata["type"] = "file";
+				$metadata["size"] = $file->content_size;
+				$metadata["timestamp"] = $file->updated_at->timestamp;
+				return $metadata;
+			});
+		});
 	}
 
 	public function getSize($path) {
