@@ -40,4 +40,20 @@ class MetadataTest extends TestCase {
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
 	}
+
+	public function testDeepFileMetadata() {
+		$adapter = new VirdafilsAdapter([]);
+		$path = "/a/sample.txt";
+		$file = File::factory()->setPath($path)->create();
+
+		$metadata = $adapter->getMimeType($path);
+
+		$this->assertEquals([
+			"type" => "file",
+			"path" => $path,
+			"mimetype" => $file->type
+		], $metadata);
+		$this->assertDatabaseCount("directories", 2);
+		$this->assertDatabaseCount("files", 1);
+	}
 }

@@ -52,15 +52,25 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function getSize($path) {
-
+		return $this>getMetadata($path);
 	}
 
 	public function getMimeType($path) {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
+		return $this->whenFileAsPartsExists($path_parts, function ($file, $resolved_path) {
+			$metadata = [
+				"type" => "file",
+				"path" => $resolved_path,
+				"mimetype" => $file->type
+			];
+
+			return $metadata;
+		});
 	}
 
 	public function getTimestamp($path) {
-
+		return $this>getMetadata($path);
 	}
 
 	public function listContents($directory = "", $recursive = false) {
