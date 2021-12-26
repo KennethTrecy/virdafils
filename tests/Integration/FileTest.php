@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\RootViolationException;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
+use KennethTrecy\Virdafils\Util\PathHelper;
 use KennethTrecy\Virdafils\Node\File;
 
 class FileTest extends TestCase {
@@ -124,6 +125,8 @@ class FileTest extends TestCase {
 
 		$url = Storage::url($path);
 
-		$this->assertEquals("", $url);
+		$this->assertEquals(route("verdafils.stream", [
+			"path" => ltrim($path, PathHelper::ABSOLUTE_ROOT)
+		]), $url);
 	}
 }

@@ -336,6 +336,23 @@ class VirdafilsAdapter implements AdapterInterface {
 		return $directory->delete();
 	}
 
+	/**
+	 * Generates the URL so the file can be downloaded.
+	 *
+	 * This is not required by the adapter interface but necessary to make the static method `url()`
+	 * of `\Illuminate\Support\Facades\Storage` work.
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public function getUrl(string $path) {
+		$resolved_path = PathHelper::resolve($path, $this->configuration);
+
+		return route("verdafils.stream", [
+			"path" => ltrim($resolved_path, PathHelper::ABSOLUTE_ROOT)
+		]);
+	}
+
 	protected function writeWithType($path, $type, $contents, Config $configuration) {
 		$this->setFallbackConfiguration($configuration);
 
