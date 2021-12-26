@@ -4,6 +4,7 @@ namespace KennethTrecy\Virdafils;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\Util\MimeType;
 use League\Flysystem\RootViolationException;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
@@ -119,6 +120,31 @@ class VirdafilsAdapter implements AdapterInterface {
 		}
 
 		return $directory->delete();
+	}
+
+	protected function writeWithType($path, $type, $contents, Config $configuration) {
+		$this->setFallbackConfiguration($configuration);
+
+		[ $directory_path, $filename ] = PathHelper::resolvedSplitDirectoryAndBase(
+			$path,
+			$configuration);
+		$directory = $this->findOrCreateDirectory($directory_path, $configuration);
+
+		if (is_null($type)) {
+			$type = MimeType::detectByFilename($filename);
+		}
+
+		$visibility = $configuration->get("visibility");
+		$directory->files()->firstOrCreate(
+			[ "name" => $filename ],
+			compact("type", "visibility", "contents")
+		);
+
+		return [
+			"type" => "file",
+			"path" => $path,
+			"visibility" => $visibility
+		];
 	}
 
 	protected function findOrCreateDirectory($directory_path, $configuration) {
