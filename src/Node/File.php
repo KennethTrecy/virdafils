@@ -15,4 +15,13 @@ class File extends AbstractNodeModel {
 	protected $casts = [
 		"contents" => Base64File::class
 	];
+
+	public function getContentSizeAttribute() {
+		$contents = $this->contents;
+		if (is_string($contents)) {
+			return strlen($contents);
+		} else {
+			return fstat($contents)[7];
+		}
+	}
 }
