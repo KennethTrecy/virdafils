@@ -127,7 +127,21 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function getVisibility($path) {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+		$resolved_path = PathHelper::join($path_parts);
+		$present_closure = function($model, $resolved_path) {
+			return [
+				"path" => $resolved_path,
+				"visibility" => $model->visibility
+			];
+		};
 
+		return $this->whenDirectoryAsPartsExists(
+			$path_parts,
+			$present_closure,
+			function ($path_parts) use ($present_closure) {
+				return $this->whenFileAsPartsExists($path_parts, $present_closure);
+			});
 	}
 
 	public function setVisibility($path, $visibility) {
