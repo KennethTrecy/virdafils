@@ -29,6 +29,18 @@
 			"url": "git@repo.kennethtrecy:KennethTrecy/elomocato.git"
 		}
 	],
+	"autoload": {
+		"psr-4": {
+			"KennethTrecy\\Virdafils\\": "src/",
+			"Database\\Factories\\KennethTrecy\\Virdafils\\Node\\": "database/factories/",
+			"Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\": "tests/"
+		}
+	},
 	"minimum-stability": "dev",
 	"prefer-stable": true
 }
