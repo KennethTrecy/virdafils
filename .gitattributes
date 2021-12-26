@@ -1,0 +1,5 @@
+.git*		text=auto eol=lf
+*.md		text=auto eol=lf
+*.xml		text=auto eol=lf
+*.php		text=auto eol=lf
+*.json	text=auto eol=lf
