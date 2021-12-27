@@ -1,7 +1,7 @@
 {
 	"name": "kennethtrecy/virdafils",
 	"type": "library",
-	"description": "A Flysystem storage driver for virtual databased-filesystem",
+	"description": "A Flysystem storage driver for virtual database filesystem",
 	"keywords": ["database", "filesystem", "storage", "driver", "laravel", "package"],
 	"homepage": "http://repo.local/KennethTrecy/virdafils",
 	"license": "proprietary",
