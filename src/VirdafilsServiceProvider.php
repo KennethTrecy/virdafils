@@ -19,7 +19,9 @@ class VirdafilsServiceProvider extends ServiceProvider {
 		Route::middleware("web")->group(function() {
 			Route::get("/storage/{path}", function(string $path) {
 				return Storage::download($path);
-			})->name("verdafils.stream");
+			})
+			->where("path", ".+")
+			->name("verdafils.stream");
 
 			Route::get("/temporary/storage/{path}", function(Request $request, string $path) {
 				if ($request->hasValidSignature()) {
@@ -27,7 +29,9 @@ class VirdafilsServiceProvider extends ServiceProvider {
 				}
 
 				abort(401);
-			})->name("verdafils.temporary.stream");
+			})
+			->where("path", ".+")
+			->name("verdafils.temporary.stream");
 		});
 	}
 }
