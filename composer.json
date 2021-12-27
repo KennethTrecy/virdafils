@@ -45,8 +45,11 @@
 		}
 	},
 	"scripts": {
-		"test:partial": [
-			"./vendor/bin/phpunit --testsuite Unit,Feature"
+		"test:offline": [
+			"./vendor/bin/phpunit --testsuite Unit,Feature,Integration"
+		],
+		"test:online": [
+			"./vendor/bin/phpunit --testsuite Online"
 		],
 		"test:full": [
 			"./vendor/bin/phpunit"

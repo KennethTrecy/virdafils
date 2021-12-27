@@ -12,6 +12,9 @@
 		<testsuite name="Integration">
 			<directory suffix="Test.php">./tests/Integration</directory>
 		</testsuite>
+		<testsuite name="Online">
+			<directory suffix="Test.php">./tests/Online</directory>
+		</testsuite>
 	</testsuites>
 	<php>
 		<env name="DB_CONNECTION" value="testing"/>
