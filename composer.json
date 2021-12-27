@@ -14,7 +14,7 @@
 	],
 	"require": {
 		"php": "^7.3|^8.0",
-		"kennethtrecy/elomocato": "^0.1.0-RC3",
+		"kennethtrecy/elomocato": "^0.1.0",
 		"illuminate/contracts": "^8.77",
 		"illuminate/support": "^8.77",
 		"league/flysystem": "1.1",
@@ -28,10 +28,13 @@
 	},
 	"repositories": [
 		{
-			"type": "vcs",
-			"url": "git@repo.kennethtrecy:KennethTrecy/elomocato.git"
+			"type": "composer",
+			"url": "http://repo.local/Kennethtrecy/PHP_packages/raw/branch/master/"
 		}
 	],
 	"minimum-stability": "dev",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"config": {
+		"secure-http": false
+	}
 }
