@@ -53,7 +53,7 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function getSize($path) {
-		return $this>getMetadata($path);
+		return $this->getMetadata($path);
 	}
 
 	public function getMimeType($path) {
@@ -71,7 +71,7 @@ class VirdafilsAdapter implements AdapterInterface {
 	}
 
 	public function getTimestamp($path) {
-		return $this>getMetadata($path);
+		return $this->getMetadata($path);
 	}
 
 	public function listContents($directory = "", $recursive = false) {

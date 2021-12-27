@@ -56,4 +56,28 @@ class MetadataTest extends TestCase {
 		$this->assertDatabaseCount("directories", 2);
 		$this->assertDatabaseCount("files", 1);
 	}
+
+	public function testRootFileSize() {
+		$adapter = new VirdafilsAdapter([]);
+		$path = "/present.txt";
+		$file = File::factory()->setPath($path)->create();
+
+		$size = $adapter->getSize($path)["size"];
+
+		$this->assertEquals(strlen($file->contents), $size);
+		$this->assertDatabaseCount("directories", 1);
+		$this->assertDatabaseCount("files", 1);
+	}
+
+	public function testRootFileTimestamp() {
+		$adapter = new VirdafilsAdapter([]);
+		$path = "/present.txt";
+		$file = File::factory()->setPath($path)->create();
+
+		$timestamp = $adapter->getSize($path)["timestamp"];
+
+		$this->assertEquals($file->updated_at->timestamp, $timestamp);
+		$this->assertDatabaseCount("directories", 1);
+		$this->assertDatabaseCount("files", 1);
+	}
 }
