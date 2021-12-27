@@ -3,7 +3,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 
 ## Installation
 1. Put the following information in the your `composer.json`:
-   ```
+	```
 	{
 		// Your specified properties like name, type, license, etc...
 
@@ -18,16 +18,24 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 		// Add the repository to instruct where to find the package
 		"repositories": [
 			{
-				"type": "vcs",
-				"url": "git@repo.kennethtrecy:KennethTrecy/virdafils.git"
+				"type": "composer",
+				"url": "http://repo.local/Kennethtrecy/PHP_packages/raw/branch/master/"
 			}
-		]
+		],
+
+
+		"config": {
+			// Other configurations here...
+
+			// Allow accessing insecure protocol for the mean time
+			"secure-http": false
+		}
 	}
 	```
 2. Run `composer install`
 3. Run `php artisan migrate:fresh`
 4. Add the disk configuration to your `config/filesystems.php`:
-   ```
+	```
 	return [
 		// other options...
 
@@ -45,7 +53,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 	]
 	```
 5. (Optional) Specify the default disk in your `.env`:
-   ```
+	```
 	FILESYSTEM_DRIVER=virdafils
 	```
 
