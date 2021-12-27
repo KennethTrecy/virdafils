@@ -10,7 +10,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 		"require": {
 			// other dependencies here...
 
-			"kennethtrecy/virdafils": "0.1.0"
+			"kennethtrecy/virdafils": "^0.1.0"
 		},
 
 		// Your other properties like require-dev, autoload, etc...
