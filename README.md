@@ -19,7 +19,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 		"repositories": [
 			{
 				"type": "composer",
-				"url": "https://github.com/Kennethtrecy/PHP_packages/raw/branch/master/"
+				"url": "https://raw.githubusercontent.com/KennethTrecy/PHP_packages/master"
 			}
 		],
 
