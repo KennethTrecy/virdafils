@@ -10,7 +10,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 		"require": {
 			// other dependencies here...
 
-			"kennethtrecy/virdafils": "^0.1.0"
+			"kennethtrecy/virdafils": "^0.2.0"
 		},
 
 		// Your other properties like require-dev, autoload, etc...
@@ -19,7 +19,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 		"repositories": [
 			{
 				"type": "composer",
-				"url": "http://repo.local/Kennethtrecy/PHP_packages/raw/branch/master/"
+				"url": "https://github.com/Kennethtrecy/PHP_packages/raw/branch/master/"
 			}
 		],
 
@@ -27,8 +27,7 @@ Virdafils is a file storage driver for Laravel framework. This driver allows the
 		"config": {
 			// Other configurations here...
 
-			// Allow accessing insecure protocol for the mean time
-			"secure-http": false
+			"secure-http": true
 		}
 	}
 	```
