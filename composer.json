@@ -3,7 +3,7 @@
 	"type": "library",
 	"description": "A Flysystem storage driver for virtual database filesystem",
 	"keywords": ["database", "filesystem", "storage", "driver", "laravel", "package"],
-	"homepage": "http://repo.local/KennethTrecy/virdafils",
+	"homepage": "https://github.com/KennethTrecy/virdafils",
 	"license": "proprietary",
 	"authors": [
 		{
@@ -30,7 +30,7 @@
 	"repositories": [
 		{
 			"type": "composer",
-			"url": "http://repo.local/Kennethtrecy/PHP_packages/raw/branch/master/"
+			"url": "https://github.com/Kennethtrecy/PHP_packages/raw/branch/master/"
 		}
 	],
 	"autoload": {
@@ -66,6 +66,6 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"config": {
-		"secure-http": false
+		"secure-http": true
 	}
 }
