@@ -13,7 +13,7 @@ The repository was based from [`plugin`] branch of [Web Template].
 		"require": {
 			// other dependencies here...
 
-			"kennethtrecy/virdafils": "^0.2.0"
+			"kennethtrecy/virdafils": "^0.3.0"
 		},
 
 		// Your other properties like require-dev, autoload, etc...
