@@ -5,7 +5,6 @@ namespace KennethTrecy\Virdafils;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\Config;
 use League\Flysystem\Util\MimeType;
-use League\Flysystem\RootViolationException;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
@@ -31,14 +30,11 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			||	File::navigateByPathParts($path_parts, $this->configuration)->exists();
 	}
 
-	public function write($path, $contents, Config $configuration) {
-		$result = $this->writeWithType($path, null, $contents, $configuration);
-		$result["contents"] = $contents;
-
-		return $result;
+	public function write(string $path, string $contents, Config $configuration): void {
+		$this->writeWithType($path, null, $contents, $configuration);
 	}
 
-	public function writeStream($path, $resource, Config $configuration) {
+	public function writeStream(string $path, $resource, Config $configuration): void {
 		$contents = stream_get_contents($resource);
 		$metadata = stream_get_meta_data($resource);
 
