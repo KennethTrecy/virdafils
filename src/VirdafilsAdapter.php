@@ -310,7 +310,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	}
 
 	public function createDir($path, Config $configuration) {
-		$this->setFallbackConfiguration($configuration);
+		$configuration = $this->getDefaultConfiguration($configuration);
 
 		$directory_parts = PathHelper::resolvedSplit($path, $configuration);
 		return $this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
@@ -371,7 +371,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	}
 
 	protected function writeWithType(string $path, $type, $contents, Config $configuration): void {
-		$this->setFallbackConfiguration($configuration);
+		$configuration = $this->getDefaultConfiguration($configuration);
 
 		[ $directory_path, $filename ] = PathHelper::resolvedSplitDirectoryAndBase(
 			$path,
@@ -425,10 +425,12 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		];
 	}
 
-	protected function setFallbackConfiguration(Config $configuration) {
+	protected function getDefaultConfiguration(Config $configuration) {
 		// Prevent setting fallback to itself
 		if ($configuration !== $this->configuration) {
-			$configuration->setFallback($this->configuration);
+			return $this->configuration;
+		} else {
+			return $configuration;
 		}
 	}
 
