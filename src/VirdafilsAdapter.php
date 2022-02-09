@@ -4,13 +4,17 @@ namespace KennethTrecy\Virdafils;
 
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\Config;
+use League\Flysystem\FilesystemException;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnableToReadFile;
 use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToDeleteDirectory;
 use League\Flysystem\UnableToSetVisibility;
+use League\Flysystem\UnableToMoveFile;
+use League\Flysystem\UnableToMoveCopy;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\DirectoryAttributes;
+use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
@@ -75,7 +79,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 					$type = $found_type;
 				}
 			} else {
-				$type = GeneralHelper::detectMimeType($path);
+				$type = MimeType::detectByFilename($path);
 			}
 
 			$this->writeWithType($path, $type, $contents, $configuration);
@@ -270,11 +274,10 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			});
 	}
 
-	public function rename($old_path, $new_path) {
+	public function move(string $old_path, string $new_path, Config $configuration): void {
 		$path_parts = PathHelper::resolvedSplit($old_path, $this->configuration);
 
-		// TODO: Allow rename for directories
-		return $this->whenFileAsPartsExists($path_parts, function ($file) use ($new_path) {
+		$this->whenFileAsPartsExists($path_parts, function ($file) use ($old_path, $new_path) {
 			[
 				$directory_path,
 				$filename
@@ -284,15 +287,32 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			$file->parentDirectory()->associate($directory);
 			$file->name = $filename;
 
-			return $file->save();
+			if(!$file->save()) {
+				throw UnableToMoveFile::fromLocationTo(
+					$old_path,
+					$new_path,
+					"Cannot save the file to the database.");
+			}
+		}, function() use ($old_path, $new_path) {
+			throw UnableToMoveFile::fromLocationTo(
+				$old_path,
+				$new_path,
+				"File does not exists.");
 		});
 	}
 
-	public function copy($old_path, $new_path) {
-		// TODO: Allow copy for directories
-		$stream = $this->readStream($old_path)["stream"];
+	public function copy(string $old_path, string $new_path, Config $configuration): void {
 
-		return (bool) $this->writeStream($new_path, $stream, $this->configuration);
+		try {
+			$stream = $this->readStream($old_path);
+			$this->writeStream($new_path, $stream, $configuration);
+		} catch(FilesystemException $error) {
+			throw UnableToCopyFile::fromLocationTo(
+				$old_path,
+				$new_path,
+				"This is probably a problem in the database",
+				$error);
+		}
 	}
 
 	/**
@@ -337,7 +357,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		$directory = $this->findOrCreateDirectory($directory_path, $configuration);
 
 		if (is_null($type)) {
-			$type = GeneralHelper::detectMimeType($filename);
+			$type = MimeType::detectByFilename($filename);
 		}
 
 		$visibility = $configuration->get("visibility");
