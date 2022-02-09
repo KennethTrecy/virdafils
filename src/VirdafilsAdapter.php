@@ -31,6 +31,54 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			||	File::navigateByPathParts($path_parts, $this->configuration)->exists();
 	}
 
+	public function write($path, $contents, Config $configuration) {
+		$result = $this->writeWithType($path, null, $contents, $configuration);
+		$result["contents"] = $contents;
+
+		return $result;
+	}
+
+	public function writeStream($path, $resource, Config $configuration) {
+		$contents = stream_get_contents($resource);
+		$metadata = stream_get_meta_data($resource);
+
+		if (fclose($resource)) {
+			$type = "text/plain";
+			if (isset($metadata["mediatype"])) {
+				$type = $metadata["mediatype"];
+			} else if ($metadata["wrapper_type"] === "http") {
+				$target_header = "Content-Type: ";
+				$found_type = null;
+
+				foreach($metadata["wrapper_data"] as $header) {
+					if (strpos($header, $target_header) === 0) {
+						$header_name_length = strlen($target_header);
+						$found_type = substr($header, $header_name_length);
+						$semicolon_index = strpos($found_type, ";");
+						if ($semicolon_index > 0) {
+							$found_type = substr($found_type, 0, $semicolon_index);
+						}
+						// UNTESTED: What if the stream passed has only semicolon in HTTP `Content-Type`
+						// header?
+						break;
+					}
+				}
+				if (is_null($found_type)) {
+					// TODO: Throw error for malformed HTTP because Content-Type header was not specified
+					throw new Exception();
+				} else {
+					$type = $found_type;
+				}
+			} else {
+				$type = MimeType::detectByFilename($path);
+			}
+
+			return $this->writeWithType($path, $type, $contents, $configuration);
+		} else {
+			return false;
+		}
+	}
+
 	public function getMetadata($path) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$path = PathHelper::join($path_parts);
@@ -197,54 +245,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 				"stream" => $contents
 			];
 		});
-	}
-
-	public function write($path, $contents, Config $configuration) {
-		$result = $this->writeWithType($path, null, $contents, $configuration);
-		$result["contents"] = $contents;
-
-		return $result;
-	}
-
-	public function writeStream($path, $resource, Config $configuration) {
-		$contents = stream_get_contents($resource);
-		$metadata = stream_get_meta_data($resource);
-
-		if (fclose($resource)) {
-			$type = "text/plain";
-			if (isset($metadata["mediatype"])) {
-				$type = $metadata["mediatype"];
-			} else if ($metadata["wrapper_type"] === "http") {
-				$target_header = "Content-Type: ";
-				$found_type = null;
-
-				foreach($metadata["wrapper_data"] as $header) {
-					if (strpos($header, $target_header) === 0) {
-						$header_name_length = strlen($target_header);
-						$found_type = substr($header, $header_name_length);
-						$semicolon_index = strpos($found_type, ";");
-						if ($semicolon_index > 0) {
-							$found_type = substr($found_type, 0, $semicolon_index);
-						}
-						// UNTESTED: What if the stream passed has only semicolon in HTTP `Content-Type`
-						// header?
-						break;
-					}
-				}
-				if (is_null($found_type)) {
-					// TODO: Throw error for malformed HTTP because Content-Type header was not specified
-					throw new Exception();
-				} else {
-					$type = $found_type;
-				}
-			} else {
-				$type = MimeType::detectByFilename($path);
-			}
-
-			return $this->writeWithType($path, $type, $contents, $configuration);
-		} else {
-			return false;
-		}
 	}
 
 	public function update($path, $contents, Config $configuration) {
