@@ -381,7 +381,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		}
 
 		$visibility = $configuration->get("visibility");
-		$directory->files()->firstOrCreate(
+		$directory->files()->updateOrCreate(
 			[ "name" => $filename ],
 			compact("type", "visibility", "contents")
 		);
