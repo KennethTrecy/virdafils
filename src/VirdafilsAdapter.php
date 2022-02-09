@@ -371,8 +371,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	}
 
 	protected function writeWithType(string $path, $type, $contents, Config $configuration): void {
-		$configuration = $this->getDefaultConfiguration($configuration);
-
 		[ $directory_path, $filename ] = PathHelper::resolvedSplitDirectoryAndBase(
 			$path,
 			$configuration);
