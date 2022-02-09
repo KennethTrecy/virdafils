@@ -79,6 +79,39 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		}
 	}
 
+	public function read($path) {
+		$file = $this->readStream($path);
+
+		if (is_array($file)) {
+			$contents = stream_get_contents($file["stream"]);
+
+			$file["contents"] = $contents;
+
+			if (fclose($file["stream"]) === false) {
+				return false;
+			}
+
+			unset($file["stream"]);
+		}
+
+		return $file;
+	}
+
+	public function readStream($path) {
+		return $this->whenFileExists($path, function ($file, $resolved_path) {
+			$contents = $file->contents;
+			if (is_string($contents)) {
+				$contents = GeneralHelper::createWrittenMemoryStream($contents);
+			}
+
+			return [
+				"type" => "file",
+				"path" => $resolved_path,
+				"stream" => $contents
+			];
+		});
+	}
+
 	public function getMetadata($path) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$path = PathHelper::join($path_parts);
@@ -212,39 +245,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			function ($path_parts) use ($present_closure) {
 				return $this->whenFileAsPartsExists($path_parts, $present_closure);
 			});
-	}
-
-	public function read($path) {
-		$file = $this->readStream($path);
-
-		if (is_array($file)) {
-			$contents = stream_get_contents($file["stream"]);
-
-			$file["contents"] = $contents;
-
-			if (fclose($file["stream"]) === false) {
-				return false;
-			}
-
-			unset($file["stream"]);
-		}
-
-		return $file;
-	}
-
-	public function readStream($path) {
-		return $this->whenFileExists($path, function ($file, $resolved_path) {
-			$contents = $file->contents;
-			if (is_string($contents)) {
-				$contents = GeneralHelper::createWrittenMemoryStream($contents);
-			}
-
-			return [
-				"type" => "file",
-				"path" => $resolved_path,
-				"stream" => $contents
-			];
-		});
 	}
 
 	public function update($path, $contents, Config $configuration) {
