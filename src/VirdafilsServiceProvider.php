@@ -2,6 +2,7 @@
 
 namespace KennethTrecy\Virdafils;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use League\Flysystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,7 +14,12 @@ class VirdafilsServiceProvider extends ServiceProvider {
 		$this->loadMigrationsFrom(__DIR__."/../database/migrations");
 
 		Storage::extend("virdafils", function($app, $configuration) {
-			return new Filesystem(new VirdafilsAdapter($configuration));
+			$adapter = new VirdafilsAdapter($configuration);
+			return new FilesystemAdapter(
+				new Filesystem($adapter),
+				$adapter,
+				$configuration
+			);
 		});
 
 		Route::middleware("web")->group(function() {
