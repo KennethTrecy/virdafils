@@ -4,7 +4,7 @@
 	"description": "A Flysystem storage driver for virtual database filesystem",
 	"keywords": ["database", "filesystem", "storage", "driver", "laravel", "package"],
 	"homepage": "https://github.com/KennethTrecy/virdafils",
-	"license": "proprietary",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Kenneth Trecy Tobias",
