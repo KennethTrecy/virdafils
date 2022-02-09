@@ -131,6 +131,11 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		$directory->delete();
 	}
 
+	public function createDirectory(string $path, Config $configuration): void {
+		$directory_parts = PathHelper::resolvedSplit($path, $configuration);
+		$this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
+	}
+
 	public function getMetadata($path) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$path = PathHelper::join($path_parts);
@@ -320,13 +325,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		$stream = $this->readStream($old_path)["stream"];
 
 		return (bool) $this->writeStream($new_path, $stream, $this->configuration);
-	}
-
-	public function createDir($path, Config $configuration) {
-		$configuration = $this->getDefaultConfiguration($configuration);
-
-		$directory_parts = PathHelper::resolvedSplit($path, $configuration);
-		return $this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
 	}
 
 	/**
