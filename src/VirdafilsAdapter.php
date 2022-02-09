@@ -10,6 +10,7 @@ use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToDeleteDirectory;
 use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\FileAttributes;
+use League\Flysystem\DirectoryAttributes;
 use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
@@ -216,9 +217,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			});
 	}
 
-	public function listContents($directory = "", $recursive = false) {
-		if ($directory === "") $directory = "/";
-
+	public function listContents(string $directory, $recursive = true): iterable {
 		return $this->whenDirectoryExists(
 			$directory,
 			function($directory, $resolved_path, $resolved_path_parts) use ($recursive) {
@@ -239,11 +238,11 @@ class VirdafilsAdapter implements FilesystemAdapter {
 								$directories->push([ $path_parts, $child_directory ]);
 							}
 
-							return [
-								"type" => "dir",
-								"path" => PathHelper::join($path_parts),
-								"timestamp" => $child_directory->updated_at->timestamp
-							];
+							return new DirectoryAttributes(
+								PathHelper::join($path_parts),
+								$child_directory->visibility,
+								$child_directory->updated_at->timestamp
+							);
 						});
 
 					$child_files = $directory
@@ -251,12 +250,13 @@ class VirdafilsAdapter implements FilesystemAdapter {
 						->get()
 						->map(function($file) use ($local_path_parts) {
 							$name = $file->name;
-							$metadata = [
-								"type" => "file",
-								"path" => PathHelper::join([ ...$local_path_parts, $name ]),
-								"size" => $file->content_size,
-								"timestamp" => $file->updated_at->timestamp
-							];
+							$metadata = new FileAttributes(
+								PathHelper::join([ ...$local_path_parts, $name ]),
+								$file->content_size,
+								$file->visibility,
+								$file->updated_at->timestamp,
+								$file->type
+							);
 
 							return $metadata;
 						});
@@ -266,7 +266,9 @@ class VirdafilsAdapter implements FilesystemAdapter {
 
 				return $result->toArray();
 			},
-			function() { return []; });
+			function() {
+				throw UnableToRetrieveMetadata::size($path, "Path does not exists.");
+			});
 	}
 
 	public function update($path, $contents, Config $configuration) {
