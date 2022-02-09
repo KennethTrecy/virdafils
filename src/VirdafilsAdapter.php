@@ -5,6 +5,7 @@ namespace KennethTrecy\Virdafils;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\Config;
 use League\Flysystem\UnableToWriteFile;
+use League\Flysystem\UnableToReadFile;
 use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
@@ -79,7 +80,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		}
 	}
 
-	public function read($path) {
+	public function read(string $path): string {
 		$file = $this->readStream($path);
 
 		if (is_array($file)) {
@@ -88,27 +89,23 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			$file["contents"] = $contents;
 
 			if (fclose($file["stream"]) === false) {
-				return false;
+				throw UnableToReadFile::fromLocation($path, "The stream did not close successfully.");
 			}
 
 			unset($file["stream"]);
 		}
 
-		return $file;
+		return $file["contents"];
 	}
 
-	public function readStream($path) {
+	public function readStream(string $path) {
 		return $this->whenFileExists($path, function ($file, $resolved_path) {
 			$contents = $file->contents;
 			if (is_string($contents)) {
 				$contents = GeneralHelper::createWrittenMemoryStream($contents);
 			}
 
-			return [
-				"type" => "file",
-				"path" => $resolved_path,
-				"stream" => $contents
-			];
+			return $contents;
 		});
 	}
 
