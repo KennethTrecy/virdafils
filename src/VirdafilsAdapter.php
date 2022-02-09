@@ -177,6 +177,45 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			});
 	}
 
+	public function mimeType(string $path): FileAttributes {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+
+		return $this->whenFileAsPartsExists($path_parts, function ($file) use ($path) {
+			return new FileAttributes($path, null, null, null, $file->type);
+		}, function() use ($path) {
+			throw UnableToRetrieveMetadata::mimeType($path, "File does not exists.");
+		});
+	}
+
+	public function fileSize(string $path): FileAttributes {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+
+		return $this->whenFileAsPartsExists($path_parts, function ($file) use ($path) {
+			return new FileAttributes($path, $file->content_size);
+		}, function() use ($path) {
+			throw UnableToRetrieveMetadata::size($path, "File does not exists.");
+		});
+	}
+
+	public function lastModified(string $path): FileAttributes {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+		$present_closure = function($model) use ($path) {
+			return new FileAttributes($path, $model->content_size);
+		};
+
+		return $this->whenDirectoryAsPartsExists(
+			$path_parts,
+			$present_closure,
+			function() use ($path_parts, $present_closure) {
+				return $this->whenFileAsPartsExists(
+					$path_parts,
+					$present_closure,
+					function() use ($path) {
+						throw UnableToRetrieveMetadata::size($path, "Path does not exists.");
+					});
+			});
+	}
+
 	public function getMetadata($path) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$path = PathHelper::join($path_parts);
@@ -194,28 +233,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 				return $metadata;
 			});
 		});
-	}
-
-	public function getSize($path) {
-		return $this->getMetadata($path);
-	}
-
-	public function getMimeType($path) {
-		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
-
-		return $this->whenFileAsPartsExists($path_parts, function ($file, $resolved_path) {
-			$metadata = [
-				"type" => "file",
-				"path" => $resolved_path,
-				"mimetype" => $file->type
-			];
-
-			return $metadata;
-		});
-	}
-
-	public function getTimestamp($path) {
-		return $this->getMetadata($path);
 	}
 
 	public function listContents($directory = "", $recursive = false) {
