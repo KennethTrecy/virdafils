@@ -1,5 +1,9 @@
-/composer.lock
+.vscode
+!/.vscode
+
 /.env
-/.phpunit.result.cache
+composer.lock
 /vendor
+/.phpunit.result.cache
+
 *hidden*
