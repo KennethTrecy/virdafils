@@ -8,13 +8,13 @@ class GeneralHelper {
 	/**
 	 * Sets a fallback (or default) values for the configuration.
 	 */
-	public static function setFallback(Config $configuration) {
-		$fallback = new Config([
+	public static function withDefaults(Config $configuration) {
+		$fallback = [
 			"root" => PathHelper::SEPARATOR,
 			"visibility" => "private"
-		]);
+		];
 
-		$configuration->setFallback($fallback);
+		$configuration->withDefaults($fallback);
 	}
 
 	public static function createMemoryStream() {
