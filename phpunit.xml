@@ -18,6 +18,6 @@
 	</testsuites>
 	<php>
 		<env name="DB_CONNECTION" value="testing"/>
-		<env name="FILESYSTEM_DRIVER" value="virdafils"/>
+		<env name="FILESYSTEM_DISK" value="virdafils"/>
 	</php>
 </phpunit>
