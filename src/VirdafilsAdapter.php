@@ -6,6 +6,8 @@ use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\Config;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnableToReadFile;
+use League\Flysystem\UnableToDeleteFile;
+use League\Flysystem\UnableToDeleteDirectory;
 use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
@@ -107,6 +109,26 @@ class VirdafilsAdapter implements FilesystemAdapter {
 
 			return $contents;
 		});
+	}
+
+	public function delete(string $path): void {
+		$this->whenFileExists($path, function ($file, $resolved_path) {
+			return $file->delete();
+		}, function() use ($path) {
+			throw UnableToDeleteFile::atLocation($path, "There is a problem in database.");
+		});
+	}
+
+	public function deleteDirectory(string $path): void {
+		$directory_parts = PathHelper::resolvedSplit($path, $this->configuration);
+
+		$directory = Directory::navigateByPathParts($directory_parts, $this->configuration)->first();
+
+		if (is_null($directory)) {
+			throw UnableToDeleteDirectory::atLocation($path, "Path does not exists.");
+		}
+
+		$directory->delete();
 	}
 
 	public function getMetadata($path) {
@@ -300,36 +322,11 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		return (bool) $this->writeStream($new_path, $stream, $this->configuration);
 	}
 
-	public function delete($path) {
-		return $this->whenFileExists($path, function ($file, $resolved_path) {
-			return $file->delete();
-		}, function() { return false; });
-	}
-
 	public function createDir($path, Config $configuration) {
 		$configuration = $this->getDefaultConfiguration($configuration);
 
 		$directory_parts = PathHelper::resolvedSplit($path, $configuration);
 		return $this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
-	}
-
-	public function deleteDir($path) {
-		$directory_parts = PathHelper::resolvedSplit($path, $this->configuration);
-
-		if ($directory_parts === PathHelper::resolvedSplit(
-			$this->configuration->get("root"),
-			new Config([ "root" => "/"])
-		)) {
-			throw new RootViolationException();
-		}
-
-		$directory = Directory::navigateByPathParts($directory_parts, $this->configuration)->first();
-
-		if ($directory === null) {
-			return false;
-		}
-
-		return $directory->delete();
 	}
 
 	/**
