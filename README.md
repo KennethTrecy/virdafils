@@ -1,5 +1,5 @@
 # VirdDaFils (Virtual Database Filesystem)
-Virdafils is a file storage driver for [Laravel framework]. This driver allows the developer to treat directories/files as records in a database.
+Virdafils is a file storage driver for [Laravel Framework]. This driver allows the developer to treat directories/files as records in a database.
 
 ## Origin
 The repository was based from [`plugin`] branch of [Web Template].
@@ -75,4 +75,4 @@ Virdafils was created by Kenneth Trecy Tobias.
 
 [`plugin`]: https://github.com/KennethTrecy/web_template/tree/plugin
 [Web Template]: http://github.com/KennethTrecy/web_template
-[Laravel framework]: https://laravel.com
+[Laravel Framework]: https://laravel.com
