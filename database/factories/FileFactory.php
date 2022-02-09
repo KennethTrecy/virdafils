@@ -30,7 +30,7 @@ class FileFactory extends Factory {
 
 	public function setPath($path, $existing_parent_directory = null, $configuration = []) {
 		if (is_array($configuration)) $configuration = new Config([]);
-		GeneralHelper::setFallback($configuration);
+		GeneralHelper::withDefaults($configuration);
 
 		$path_parts = PathHelper::resolvedSplitCompletely($path, $configuration);
 		$directory_names = $path_parts["dirname"];

@@ -25,7 +25,7 @@ class DirectoryFactory extends Factory {
 
 	public function setPath($path, $existing_parent = null, $configuration = []) {
 		if (is_array($configuration)) $configuration = new Config([]);
-		GeneralHelper::setFallback($configuration);
+		GeneralHelper::withDefaults($configuration);
 
 		$directory_names = PathHelper::resolvedSplit($path, $configuration);
 		return $this->setPathParts($directory_names, $existing_parent);
