@@ -11,7 +11,6 @@ use League\Flysystem\UnableToDeleteDirectory;
 use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\DirectoryAttributes;
-use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
@@ -76,7 +75,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 					$type = $found_type;
 				}
 			} else {
-				$type = MimeType::detectByFilename($path);
+				$type = GeneralHelper::detectMimeType($path);
 			}
 
 			$this->writeWithType($path, $type, $contents, $configuration);
@@ -338,7 +337,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		$directory = $this->findOrCreateDirectory($directory_path, $configuration);
 
 		if (is_null($type)) {
-			$type = MimeType::detectByFilename($filename);
+			$type = GeneralHelper::detectMimeType($filename);
 		}
 
 		$visibility = $configuration->get("visibility");

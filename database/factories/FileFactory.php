@@ -4,7 +4,6 @@ namespace Database\Factories\KennethTrecy\Virdafils\Node;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use League\Flysystem\Config;
-use League\Flysystem\Util\MimeType;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
 use KennethTrecy\Virdafils\Util\PathHelper;
 use KennethTrecy\Virdafils\Node\Directory;
@@ -22,7 +21,7 @@ class FileFactory extends Factory {
 		$filename = $this->faker->word().".".$this->faker->fileExtension();
 		return [
 			"name" => $filename,
-			"type" => MimeType::detectByFilename($filename),
+			"type" => GeneralHelper::detectMimeType($filename),
 			"visibility" => "private",
 			"contents" => $this->faker->text(150)
 		];
@@ -39,7 +38,7 @@ class FileFactory extends Factory {
 		return $this
 			->state(function(array $attributes) use ($basename) {
 				$attributes["name"] = $basename;
-				$attributes["type"] = MimeType::detectByFilename($attributes["name"]);
+				$attributes["type"] = GeneralHelper::detectMimeType($attributes["name"]);
 				return $attributes;
 			})
 			->for(
