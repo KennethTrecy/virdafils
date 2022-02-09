@@ -2,7 +2,7 @@
 
 namespace KennethTrecy\Virdafils;
 
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\Config;
 use League\Flysystem\Util\MimeType;
 use League\Flysystem\RootViolationException;
@@ -13,20 +13,18 @@ use KennethTrecy\Virdafils\Node\Directory;
 use KennethTrecy\Virdafils\Node\File;
 
 /**
- * For more information, please read the links below.
- * @link https://github.com/thephpleague/flysystem/blob/1.1.9/src/AdapterInterface.php
- * @link https://github.com/thephpleague/flysystem/blob/1.1.9/src/ReadInterface.php
+ * Provides the adapter to CRUD file(s) from/to database.
  */
-class VirdafilsAdapter implements AdapterInterface {
+class VirdafilsAdapter implements FilesystemAdapter {
 	protected Config $configuration;
 
 	function __construct(array $configuration = []) {
 		$this->configuration = new Config($configuration);
 
-		GeneralHelper::setFallback($this->configuration);
+		GeneralHelper::withDefaults($this->configuration);
 	}
 
-	public function has($path) {
+	public function fileExists(string $path): bool {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
 		return Directory::navigateByPathParts($path_parts, $this->configuration)->exists()
