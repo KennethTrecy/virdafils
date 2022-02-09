@@ -48,7 +48,7 @@
 	},
 	"scripts": {
 		"test:offline": [
-			"./vendor/bin/phpunit --testsuite Unit,Feature,Integration"
+			"./vendor/bin/phpunit --testsuite Unit,Integration"
 		],
 		"test:online": [
 			"./vendor/bin/phpunit --testsuite Online"
