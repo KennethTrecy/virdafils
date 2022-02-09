@@ -3,7 +3,6 @@
 namespace KennethTrecy\Virdafils\Util;
 
 use League\Flysystem\Config;
-use League\Flysystem\RootViolationException;
 
 class PathHelper {
 	const SEPARATOR = "/";
@@ -43,8 +42,6 @@ class PathHelper {
 	 * @param string $path The path to be split
 	 * @param \League\Flysystem\Config $configuration Contains the root of the path
 	 * @return array
-	 *
-	 * @throws \League\Flysystem\RootViolationException
 	 */
 	public static function resolvedSplitDirectoryAndBase(string $path, Config $configuration) {
 		$path_parts = static::resolvedSplitCompletely($path, $configuration);
@@ -63,8 +60,6 @@ class PathHelper {
 	 * @param string $path The path to be split
 	 * @param \League\Flysystem\Config $configuration Contains the root of the path
 	 * @return array
-	 *
-	 * @throws \League\Flysystem\RootViolationException
 	 */
 	public static function resolve(string $path, Config $configuration) {
 		return static::join(static::resolvedSplit($path, $configuration));
@@ -78,8 +73,6 @@ class PathHelper {
 	 * @param string $path The path to be split
 	 * @param \League\Flysystem\Config $configuration Contains the root of the path
 	 * @return array
-	 *
-	 * @throws \League\Flysystem\RootViolationException
 	 */
 	public static function resolvedSplit(string $path, Config $configuration) {
 		return static::resolvedSplitCompletely($path, $configuration, true)["dirname"];
@@ -96,10 +89,8 @@ class PathHelper {
 	 *
 	 * @param string $path The path to be split
 	 * @param \League\Flysystem\Config $configuration Contains the root of the path
-	 * @param bool $configuration If true, the `basename` will be moved to `dirname`
+	 * @param bool $has_no_basename If true, the `basename` will be moved to `dirname`
 	 * @return array
-	 *
-	 * @throws \League\Flysystem\RootViolationException
 	 */
 	public static function resolvedSplitCompletely(
 		string $path,
@@ -134,8 +125,6 @@ class PathHelper {
 			$parts["basename"] = $parts["extension"] = $parts["filename"] = "";
 		}
 
-		$exception = null;
-
 		// Resolve the current parts of the directory
 		$current_parts = [];
 		foreach ($parts["dirname"] as $current_directory_name) {
@@ -144,21 +133,8 @@ class PathHelper {
 				if ($current_level === 0) {
 					array_push($current_parts, static::ABSOLUTE_ROOT);
 				}
-			} else if ($current_directory_name === "..") {
-				if ($current_level > 1) {
-					array_pop($current_parts);
-				} else {
-					throw new RootViolationException();
-				}
 			} else {
 				array_push($current_parts, $current_directory_name);
-			}
-		}
-
-		// Double check the current parts
-		foreach ($root_parts as $key => $directory_name) {
-			if (!array_key_exists($key, $current_parts) || $current_parts[$key] !== $directory_name) {
-				throw new RootViolationException();
 			}
 		}
 
