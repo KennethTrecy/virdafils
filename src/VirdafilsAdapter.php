@@ -4,6 +4,7 @@ namespace KennethTrecy\Virdafils;
 
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\Config;
+use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
@@ -52,16 +53,19 @@ class VirdafilsAdapter implements FilesystemAdapter {
 						$found_type = substr($header, $header_name_length);
 						$semicolon_index = strpos($found_type, ";");
 						if ($semicolon_index > 0) {
-							$found_type = substr($found_type, 0, $semicolon_index);
+							$found_type = trim(substr($found_type, 0, $semicolon_index));
 						}
-						// UNTESTED: What if the stream passed has only semicolon in HTTP `Content-Type`
-						// header?
 						break;
 					}
 				}
 				if (is_null($found_type)) {
-					// TODO: Throw error for malformed HTTP because Content-Type header was not specified
-					throw new Exception();
+					throw UnableToWriteFile::atLocation(
+						$path,
+						"The HTTP Content-Type header is missing.");
+				} else if ($found_type === "") {
+					throw UnableToWriteFile::atLocation(
+						$path,
+						"The HTTP Content-Type header is malformed.");
 				} else {
 					$type = $found_type;
 				}
@@ -69,9 +73,9 @@ class VirdafilsAdapter implements FilesystemAdapter {
 				$type = MimeType::detectByFilename($path);
 			}
 
-			return $this->writeWithType($path, $type, $contents, $configuration);
+			$this->writeWithType($path, $type, $contents, $configuration);
 		} else {
-			return false;
+			throw UnableToWriteFile::atLocation($path, "The stream did not close successfully.");
 		}
 	}
 
@@ -366,7 +370,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		]);
 	}
 
-	protected function writeWithType($path, $type, $contents, Config $configuration) {
+	protected function writeWithType(string $path, $type, $contents, Config $configuration): void {
 		$this->setFallbackConfiguration($configuration);
 
 		[ $directory_path, $filename ] = PathHelper::resolvedSplitDirectoryAndBase(
@@ -383,12 +387,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			[ "name" => $filename ],
 			compact("type", "visibility", "contents")
 		);
-
-		return [
-			"type" => "file",
-			"path" => $path,
-			"visibility" => $visibility
-		];
 	}
 
 	protected function findOrCreateDirectory($directory_path, $configuration) {
