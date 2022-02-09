@@ -3,6 +3,7 @@
 namespace KennethTrecy\Virdafils\Util;
 
 use League\Flysystem\Config;
+use League\MimeTypeDetection\FinfoMimeTypeDetector;
 
 class GeneralHelper {
 	/**
@@ -30,5 +31,9 @@ class GeneralHelper {
 
 	public static function createDataStream($type, $contents) {
 		return fopen("data://$type,".urlencode($contents), "rb");
+	}
+
+	public static function detectMimeType($path) {
+		return (new FinfoMimeTypeDetector())->detectMimeTypeFromPath($path);
 	}
 }
