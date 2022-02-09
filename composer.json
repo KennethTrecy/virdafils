@@ -15,12 +15,13 @@
 	],
 	"require": {
 		"php": "^8.0.2",
+		"illuminate/contracts": "^9.0",
+		"illuminate/database": "^9.0",
+		"illuminate/filesystem": "^9.0",
+		"illuminate/http": "^9.0",
+		"illuminate/support": "^9.0",
 		"kennethtrecy/elomocato": "^0.3.0",
-		"illuminate/contracts": "^8.77",
-		"illuminate/support": "^8.77",
-		"league/flysystem": "^1.1",
-		"illuminate/database": "^8.77",
-		"illuminate/http": "^8.77"
+		"league/flysystem": "^2.4"
 	},
 	"require-dev": {
 		"laravel/framework": "^9.0",
@@ -66,6 +67,7 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"config": {
+		"sort-packages": true,
 		"secure-http": true
 	}
 }
