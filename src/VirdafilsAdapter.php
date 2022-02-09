@@ -8,6 +8,8 @@ use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnableToReadFile;
 use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToDeleteDirectory;
+use League\Flysystem\UnableToSetVisibility;
+use League\Flysystem\FileAttributes;
 use League\Flysystem\Util\MimeType;
 use Illuminate\Support\Facades\URL;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
@@ -136,6 +138,45 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		$this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
 	}
 
+	public function setVisibility(string $path, string $visibility): void {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+		$resolved_path = PathHelper::join($path_parts);
+		$present_closure = function($model, $resolved_path) use ($visibility) {
+			$model->visibility = $visibility;
+			if ($model->save()) {
+				return [
+					"path" => $resolved_path,
+					"visibility" => $model->visibility
+				];
+			} else {
+				throw UnableToSetVisibility::atLocation($path, "Probably a database error.");
+			}
+		};
+
+		$this->whenFileAsPartsExists($path_parts, $present_closure, function() use ($path) {
+			throw UnableToSetVisibility::atLocation($path, "It does not exists.");
+		});
+	}
+
+	public function visibility(string $path): FileAttributes {
+		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+		$present_closure = function($model, $resolved_path) use ($path) {
+			return new FileAttributes($path, null, $model->visibility);
+		};
+
+		return $this->whenDirectoryAsPartsExists(
+			$path_parts,
+			$present_closure,
+			function($path_parts) use ($present_closure) {
+				return $this->whenFileAsPartsExists(
+					$path_parts,
+					$present_closure,
+					function() use ($path) {
+						throw UnableToRetrieveMetadata::visibility($path, "Path does not exists.");
+					});
+			});
+	}
+
 	public function getMetadata($path) {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$path = PathHelper::join($path_parts);
@@ -228,47 +269,6 @@ class VirdafilsAdapter implements FilesystemAdapter {
 				return $result->toArray();
 			},
 			function() { return []; });
-	}
-
-	public function getVisibility($path) {
-		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
-		$resolved_path = PathHelper::join($path_parts);
-		$present_closure = function($model, $resolved_path) {
-			return [
-				"path" => $resolved_path,
-				"visibility" => $model->visibility
-			];
-		};
-
-		return $this->whenDirectoryAsPartsExists(
-			$path_parts,
-			$present_closure,
-			function ($path_parts) use ($present_closure) {
-				return $this->whenFileAsPartsExists($path_parts, $present_closure);
-			});
-	}
-
-	public function setVisibility($path, $visibility) {
-		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
-		$resolved_path = PathHelper::join($path_parts);
-		$present_closure = function($model, $resolved_path) use ($visibility) {
-			$model->visibility = $visibility;
-			if ($model->save()) {
-				return [
-					"path" => $resolved_path,
-					"visibility" => $model->visibility
-				];
-			} else {
-				return false;
-			}
-		};
-
-		return $this->whenDirectoryAsPartsExists(
-			$path_parts,
-			$present_closure,
-			function ($path_parts) use ($present_closure) {
-				return $this->whenFileAsPartsExists($path_parts, $present_closure);
-			});
 	}
 
 	public function update($path, $contents, Config $configuration) {
