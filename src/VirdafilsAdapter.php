@@ -152,9 +152,17 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			}
 		};
 
-		$this->whenFileAsPartsExists($path_parts, $present_closure, function() use ($path) {
-			throw UnableToSetVisibility::atLocation($path, "It does not exists.");
-		});
+		$this->whenDirectoryAsPartsExists(
+			$path_parts,
+			$present_closure,
+			function($path_parts) use ($path, $present_closure) {
+				$this->whenFileAsPartsExists(
+					$path_parts,
+					$present_closure,
+					function() use ($path) {
+						throw UnableToSetVisibility::atLocation($path, "Path does not exists.");
+					});
+			});
 	}
 
 	public function visibility(string $path): FileAttributes {
