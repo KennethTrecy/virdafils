@@ -4,7 +4,8 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use League\Flysystem\Config;
-use League\Flysystem\RootViolationException;
+use League\Flysystem\DirectoryAttributes;
+use League\Flysystem\FileAttributes;
 use KennethTrecy\Virdafils\VirdafilsAdapter;
 use KennethTrecy\Virdafils\Util\PathHelper;
 use KennethTrecy\Virdafils\Node\Directory;
@@ -22,19 +23,20 @@ class ListContentsTest extends TestCase {
 
 		$this->assertEquals([
 			...$directories->map(function($directory) {
-				return [
-					"type" => "dir",
-					"path" => PathHelper::resolve("/".$directory->name, new Config([])),
-					"timestamp" => $directory->updated_at->timestamp
-				];
+				return new DirectoryAttributes(
+					PathHelper::resolve("/".$directory->name, new Config([])),
+					$directory->visibility,
+					$directory->updated_at->timestamp
+				);
 			})->toArray(),
 			...$files->map(function($file) {
-				return [
-					"type" => "file",
-					"path" => PathHelper::resolve("/".$file->name, new Config([])),
-					"size" => $file->content_size,
-					"timestamp" => $file->updated_at->timestamp
-				];
+				return new FileAttributes(
+					PathHelper::resolve("/".$file->name, new Config([])),
+					$file->content_size,
+					$file->visibility,
+					$file->updated_at->timestamp,
+					$file->type
+				);
 			})->toArray(),
 		], $list);
 	}
@@ -53,38 +55,39 @@ class ListContentsTest extends TestCase {
 
 		$this->assertEquals([
 			...$directories->map(function($directory) {
-				return [
-					"type" => "dir",
-					"path" => PathHelper::resolve("/".$directory->name, new Config([])),
-					"timestamp" => $directory->updated_at->timestamp
-				];
+				return new DirectoryAttributes(
+					PathHelper::resolve("/".$directory->name, new Config([])),
+					$directory->visibility,
+					$directory->updated_at->timestamp
+				);
 			})->toArray(),
 			...$directories->map(function($directory, $index) use ($files) {
 				$subdirectories = $directory
 					->childDirectories()
 					->get()
 					->map(function ($subdirectory) use ($directory) {
-						return [
-							"type" => "dir",
-							"path" => PathHelper::resolve(
+						return new DirectoryAttributes(
+							PathHelper::resolve(
 								PathHelper::join(["/", $directory->name, $subdirectory->name]),
 								new Config([])),
-							"timestamp" => $directory->updated_at->timestamp
-						];
+							$directory->visibility,
+							$directory->updated_at->timestamp
+						);
 					});
 
 				$subfiles = collect([]);
 
 				if ($index === 0) {
 					$subfiles = $files->map(function($file) {
-						return [
-							"type" => "file",
-							"path" => PathHelper::resolve(
+						return new FileAttributes(
+							PathHelper::resolve(
 								PathHelper::join(["/", $file->parentDirectory->name, $file->name]),
 								new Config([])),
-							"size" => $file->content_size,
-							"timestamp" => $file->updated_at->timestamp
-						];
+							$file->content_size,
+							$file->visibility,
+							$file->updated_at->timestamp,
+							$file->type
+						);
 					});
 				}
 
