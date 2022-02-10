@@ -6,14 +6,16 @@ use League\Flysystem\Config;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 
 class GeneralHelper {
+	public static array $fallback = [
+		"root" => PathHelper::SEPARATOR,
+		"visibility" => "private"
+	];
+
 	/**
 	 * Sets a fallback (or default) values for the configuration.
 	 */
 	public static function withDefaults(Config $configuration) {
-		$fallback = [
-			"root" => PathHelper::SEPARATOR,
-			"visibility" => "private"
-		];
+		$fallback = static::$fallback;
 
 		$configuration->withDefaults($fallback);
 	}
