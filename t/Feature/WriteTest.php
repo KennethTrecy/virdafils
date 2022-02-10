@@ -14,13 +14,8 @@ class WriteTest extends TestCase {
 		$path = "/present.txt";
 		$file = File::factory()->streamContents()->setPath($path)->make();
 
-		$writeInfo = $adapter->writeStream($path, $file->contents, new Config([]));
+		$adapter->writeStream($path, $file->contents, new Config([]));
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"visibility" => "private"
-		], $writeInfo);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
 	}
@@ -30,13 +25,8 @@ class WriteTest extends TestCase {
 		$path = "/a/b/c/present.txt";
 		$file = File::factory()->streamContents()->setPath($path)->make();
 
-		$writeInfo = $adapter->writeStream($path, $file->contents, new Config([]));
+		$adapter->writeStream($path, $file->contents, new Config([]));
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"visibility" => "private"
-		], $writeInfo);
 		$this->assertDatabaseCount("directories", 4);
 		$this->assertDatabaseCount("files", 1);
 	}
@@ -46,14 +36,8 @@ class WriteTest extends TestCase {
 		$path = "/present.txt";
 		$file = File::factory()->setPath($path)->make();
 
-		$writeInfo = $adapter->write($path, $file->contents, new Config([]));
+		$adapter->write($path, $file->contents, new Config([]));
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"visibility" => "private",
-			"contents" => $file->contents
-		], $writeInfo);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
 	}
@@ -63,14 +47,8 @@ class WriteTest extends TestCase {
 		$path = "/a/b/c/present.txt";
 		$file = File::factory()->setPath($path)->make();
 
-		$writeInfo = $adapter->write($path, $file->contents, new Config([]));
+		$adapter->write($path, $file->contents, new Config([]));
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"visibility" => "private",
-			"contents" => $file->contents
-		], $writeInfo);
 		$this->assertDatabaseCount("directories", 4);
 		$this->assertDatabaseCount("files", 1);
 		$this->assertDatabaseHas("files", [
@@ -88,13 +66,8 @@ class WriteTest extends TestCase {
 		stream_copy_to_stream($file->contents, $copied_stream);
 		$contents = stream_get_contents($copied_stream);
 
-		$writeInfo = $adapter->writeStream($path, $file->contents, new Config([]));
+		$adapter->writeStream($path, $file->contents, new Config([]));
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"visibility" => "private"
-		], $writeInfo);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
 		$this->assertDatabaseHas("files", [
