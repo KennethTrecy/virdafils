@@ -88,21 +88,14 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	}
 
 	public function read(string $path): string {
-		$file = $this->readStream($path);
+		$stream = $this->readStream($path);
+		$contents = stream_get_contents($stream);
 
-		if (is_array($file)) {
-			$contents = stream_get_contents($file["stream"]);
-
-			$file["contents"] = $contents;
-
-			if (fclose($file["stream"]) === false) {
-				throw UnableToReadFile::fromLocation($path, "The stream did not close successfully.");
-			}
-
-			unset($file["stream"]);
+		if (fclose($stream) === false) {
+			throw UnableToReadFile::fromLocation($path, "The stream did not close successfully.");
 		}
 
-		return $file["contents"];
+		return $contents;
 	}
 
 	public function readStream(string $path) {
