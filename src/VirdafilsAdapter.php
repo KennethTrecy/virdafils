@@ -145,14 +145,9 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	public function setVisibility(string $path, string $visibility): void {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$resolved_path = PathHelper::join($path_parts);
-		$present_closure = function($model, $resolved_path) use ($visibility) {
+		$present_closure = function($model) use ($path, $visibility) {
 			$model->visibility = $visibility;
-			if ($model->save()) {
-				return [
-					"path" => $resolved_path,
-					"visibility" => $model->visibility
-				];
-			} else {
+			if (!$model->save()) {
 				throw UnableToSetVisibility::atLocation($path, "Probably a database error.");
 			}
 		};
@@ -171,7 +166,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 		return $this->whenDirectoryAsPartsExists(
 			$path_parts,
 			$present_closure,
-			function($path_parts) use ($present_closure) {
+			function($path_parts) use ($path, $present_closure) {
 				return $this->whenFileAsPartsExists(
 					$path_parts,
 					$present_closure,
