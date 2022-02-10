@@ -15,12 +15,13 @@ class SetVisibilityTest extends TestCase {
 		$directory = Directory::factory()->setPath($path)->create();
 		$new_visibility = "public";
 
-		$visibility = $adapter->setVisibility($path, $new_visibility);
+		$attributes = $adapter->setVisibility($path, $new_visibility);
 
-		$this->assertEquals([
-			"path" => $path,
+		$this->assertDatabaseHas("directories", [
 			"visibility" => $new_visibility
-		], $visibility);
+		]);
+		$this->assertDatabaseCount("directories", 1);
+		$this->assertDatabaseCount("files", 0);
 	}
 
 	public function testRootFileVisibility() {
@@ -29,11 +30,12 @@ class SetVisibilityTest extends TestCase {
 		$file = File::factory()->setPath($path)->create();
 		$new_visibility = "public";
 
-		$visibility = $adapter->setVisibility($path, $new_visibility);
+		$attributes = $adapter->setVisibility($path, $new_visibility);
 
-		$this->assertEquals([
-			"path" => $path,
+		$this->assertDatabaseHas("files", [
 			"visibility" => $new_visibility
-		], $visibility);
+		]);
+		$this->assertDatabaseCount("directories", 1);
+		$this->assertDatabaseCount("files", 1);
 	}
 }

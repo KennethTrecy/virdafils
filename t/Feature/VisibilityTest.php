@@ -8,18 +8,15 @@ use KennethTrecy\Virdafils\VirdafilsAdapter;
 use KennethTrecy\Virdafils\Node\File;
 use KennethTrecy\Virdafils\Node\Directory;
 
-class GetVisibilityTest extends TestCase {
+class VisibilityTest extends TestCase {
 	public function testRootDirectory() {
 		$adapter = new VirdafilsAdapter([]);
 		$path = "/";
 		$directory = Directory::factory()->setPath($path)->create();
 
-		$visibility = $adapter->getVisibility($path);
+		$attributes = $adapter->visibility($path);
 
-		$this->assertEquals([
-			"path" => $path,
-			"visibility" => $directory->visibility
-		], $visibility);
+		$this->assertEquals($directory->visibility, $attributes->visibility());
 	}
 
 	public function testRootFileVisibility() {
@@ -27,11 +24,8 @@ class GetVisibilityTest extends TestCase {
 		$path = "/present_a.txt";
 		$file = File::factory()->setPath($path)->create();
 
-		$visibility = $adapter->getVisibility($path);
+		$attributes = $adapter->visibility($path);
 
-		$this->assertEquals([
-			"path" => $path,
-			"visibility" => $file->visibility
-		], $visibility);
+		$this->assertEquals($file->visibility, $attributes->visibility());
 	}
 }
