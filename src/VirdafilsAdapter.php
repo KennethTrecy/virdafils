@@ -137,6 +137,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	}
 
 	public function createDirectory(string $path, Config $configuration): void {
+		$configuration = GeneralHelper::withDefaults($configuration);
 		$directory_parts = PathHelper::resolvedSplit($path, $configuration);
 		$this->createDirectoryFromParts($directory_parts, $configuration->get("visibility"));
 	}

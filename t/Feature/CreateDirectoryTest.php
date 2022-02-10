@@ -11,7 +11,7 @@ class CreateDirectoryTest extends TestCase {
 		$adapter = new VirdafilsAdapter([]);
 		$path = "/";
 
-		$adapter->createDir($path, new Config([]));
+		$adapter->createDirectory($path, new Config([]));
 
 		$this->assertDatabaseHas("directories", [ "name" => "/" ]);
 		$this->assertDatabaseCount("directories", 1);
@@ -21,7 +21,7 @@ class CreateDirectoryTest extends TestCase {
 		$adapter = new VirdafilsAdapter([]);
 		$path = "/a";
 
-		$adapter->createDir($path, new Config([]));
+		$adapter->createDirectory($path, new Config([]));
 
 		$this->assertDatabaseHas("directories", [ "name" => "/" ]);
 		$this->assertDatabaseHas("directories", [ "name" => "a" ]);
@@ -29,10 +29,10 @@ class CreateDirectoryTest extends TestCase {
 	}
 
 	public function testPathCreationFromRoot() {
-		$adapter = new VirdafilsAdapter([ "root" => "/a" ]);
+		$adapter = new VirdafilsAdapter([]);
 		$path = "b";
 
-		$adapter->createDir($path, new Config([]));
+		$adapter->createDirectory($path, new Config([ "root" => "/a" ]));
 
 		$this->assertDatabaseHas("directories", [ "name" => "/" ]);
 		$this->assertDatabaseHas("directories", [ "name" => "a" ]);
