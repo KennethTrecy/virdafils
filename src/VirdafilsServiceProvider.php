@@ -8,15 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use KennethTrecy\Virdafils\Util\GeneralHelper;
 
 class VirdafilsServiceProvider extends ServiceProvider {
 	public function boot() {
 		$this->loadMigrationsFrom(__DIR__."/../database/migrations");
 
 		Storage::extend("virdafils", function($app, $configuration) {
+			$configuration = array_merge(GeneralHelper::$fallback, $configuration);
+
 			$adapter = new VirdafilsAdapter($configuration);
 			return new FilesystemAdapter(
-				new Filesystem($adapter),
+				new Filesystem($adapter, $configuration),
 				$adapter,
 				$configuration
 			);
