@@ -7,13 +7,13 @@ use KennethTrecy\Virdafils\VirdafilsAdapter;
 use KennethTrecy\Virdafils\Node\Directory;
 use KennethTrecy\Virdafils\Node\File;
 
-class HasTest extends TestCase {
+class FileExistsTest extends TestCase {
 	public function testRootDirectoryPresence() {
 		$adapter = new VirdafilsAdapter([]);
 		$path = "/";
 		$root = Directory::factory()->setPath($path)->create();
 
-		$isPresent = $adapter->has($path);
+		$isPresent = $adapter->fileExists($path);
 
 		$this->assertTrue($isPresent);
 		$this->assertDatabaseCount("directories", 1);
@@ -24,7 +24,7 @@ class HasTest extends TestCase {
 		$path = "/a";
 		$subdirectory = Directory::factory()->setPath($path)->create();
 
-		$isPresent = $adapter->has($path);
+		$isPresent = $adapter->fileExists($path);
 
 		$this->assertTrue($isPresent);
 		$this->assertDatabaseCount("directories", 2);
@@ -38,7 +38,7 @@ class HasTest extends TestCase {
 			->setPath($path, $present_subdirectory->parentDirectory)
 			->make();
 
-		$isPresent = $adapter->has($path);
+		$isPresent = $adapter->fileExists($path);
 
 		$this->assertFalse($isPresent);
 		$this->assertDatabaseCount("directories", 2);
@@ -49,7 +49,7 @@ class HasTest extends TestCase {
 		$path = "/present.txt";
 		$present_file = File::factory()->setPath($path)->create();
 
-		$isPresent = $adapter->has($path);
+		$isPresent = $adapter->fileExists($path);
 
 		$this->assertTrue($isPresent);
 		$this->assertDatabaseCount("directories", 1);
@@ -61,7 +61,7 @@ class HasTest extends TestCase {
 		$path = "/absent.txt";
 		$absent_file = File::factory()->setPath($path)->make();
 
-		$isPresent = $adapter->has($path);
+		$isPresent = $adapter->fileExists($path);
 
 		$this->assertFalse($isPresent);
 		$this->assertDatabaseCount("directories", 1);
