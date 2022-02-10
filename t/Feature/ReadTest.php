@@ -12,17 +12,11 @@ class ReadTest extends TestCase {
 		$path = "/present.txt";
 		$present_file = File::factory()->setPath($path)->create();
 
-		$readInfo = $adapter->readStream($path);
+		$readStream = $adapter->readStream($path);
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"stream" => $readInfo["stream"]
-		], $readInfo);
+		$this->assertTrue(fclose($readStream));
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
-
-		fclose($readInfo["stream"]);
 	}
 
 	public function testPresentDeepFileStream() {
@@ -30,17 +24,11 @@ class ReadTest extends TestCase {
 		$path = "/a/b/c/present.txt";
 		$present_file = File::factory()->setPath($path)->create();
 
-		$readInfo = $adapter->readStream($path);
+		$readStream = $adapter->readStream($path);
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"stream" => $readInfo["stream"]
-		], $readInfo);
+		$this->assertTrue(fclose($readStream));
 		$this->assertDatabaseCount("directories", 4);
 		$this->assertDatabaseCount("files", 1);
-
-		fclose($readInfo["stream"]);
 	}
 
 	public function testPresentRootFile() {
@@ -48,13 +36,9 @@ class ReadTest extends TestCase {
 		$path = "/present.txt";
 		$present_file = File::factory()->setPath($path)->create();
 
-		$readInfo = $adapter->read($path);
+		$contents = $adapter->read($path);
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"contents" => $present_file->contents
-		], $readInfo);
+		$this->assertEquals($present_file->contents, $contents);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
 	}
@@ -64,13 +48,9 @@ class ReadTest extends TestCase {
 		$path = "/a/b/c/present.txt";
 		$present_file = File::factory()->setPath($path)->create();
 
-		$readInfo = $adapter->read($path);
+		$contents = $adapter->read($path);
 
-		$this->assertEquals([
-			"type" => "file",
-			"path" => $path,
-			"contents" => $present_file->contents
-		], $readInfo);
+		$this->assertEquals($present_file->contents, $contents);
 		$this->assertDatabaseCount("directories", 4);
 		$this->assertDatabaseCount("files", 1);
 	}
