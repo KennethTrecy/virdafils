@@ -15,9 +15,8 @@ class CopyTest extends TestCase {
 		$new_path = "/present_b.txt";
 		$file = File::factory()->setPath($old_path)->create();
 
-		$hasCopied = $adapter->copy($old_path, $new_path);
+		$adapter->copy($old_path, $new_path, new Config());
 
-		$this->assertTrue($hasCopied);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 2);
 		$root_id = Directory::path("/")->first()->id;
