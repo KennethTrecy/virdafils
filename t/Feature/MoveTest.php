@@ -8,16 +8,15 @@ use KennethTrecy\Virdafils\VirdafilsAdapter;
 use KennethTrecy\Virdafils\Node\File;
 use KennethTrecy\Virdafils\Node\Directory;
 
-class RenameTest extends TestCase {
+class MoveTest extends TestCase {
 	public function testRootFileRename() {
 		$adapter = new VirdafilsAdapter([]);
 		$old_path = "/present_a.txt";
 		$new_path = "/present_b.txt";
 		$file = File::factory()->setPath($old_path)->create();
 
-		$hasRenamed = $adapter->rename($old_path, $new_path);
+		$adapter->move($old_path, $new_path, new Config([]));
 
-		$this->assertTrue($hasRenamed);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 1);
 		$this->assertDatabaseHas("files", [
@@ -33,9 +32,8 @@ class RenameTest extends TestCase {
 		$new_path = "$new_directory_path/present_c.txt";
 		$file = File::factory()->setPath($old_path)->create();
 
-		$hasRenamed = $adapter->rename($old_path, $new_path);
+		$adapter->move($old_path, $new_path, new Config([]));
 
-		$this->assertTrue($hasRenamed);
 		$this->assertDatabaseCount("directories", 3);
 		$this->assertDatabaseCount("files", 1);
 		$this->assertDatabaseHas("files", [
