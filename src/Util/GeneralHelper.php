@@ -14,10 +14,10 @@ class GeneralHelper {
 	/**
 	 * Sets a fallback (or default) values for the configuration.
 	 */
-	public static function withDefaults(Config $configuration) {
+	public static function withDefaults(Config $configuration): Config {
 		$fallback = static::$fallback;
 
-		$configuration->withDefaults($fallback);
+		return $configuration->withDefaults($fallback);
 	}
 
 	public static function createMemoryStream() {

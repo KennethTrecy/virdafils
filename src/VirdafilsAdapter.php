@@ -29,7 +29,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	function __construct(array $configuration = []) {
 		$this->configuration = new Config($configuration);
 
-		GeneralHelper::withDefaults($this->configuration);
+		$this->configuration = GeneralHelper::withDefaults($this->configuration);
 	}
 
 	public function fileExists(string $path): bool {
@@ -350,6 +350,7 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	}
 
 	protected function writeWithType(string $path, $type, $contents, Config $configuration): void {
+		$configuration = GeneralHelper::withDefaults($configuration);
 		[ $directory_path, $filename ] = PathHelper::resolvedSplitDirectoryAndBase(
 			$path,
 			$configuration);
