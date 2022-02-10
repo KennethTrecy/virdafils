@@ -49,7 +49,7 @@
 	},
 	"scripts": {
 		"test:offline": [
-			"./vendor/bin/phpunit --testsuite Unit,Integration"
+			"./vendor/bin/phpunit --testsuite Unit,Feature,Integration"
 		],
 		"test:online": [
 			"./vendor/bin/phpunit --testsuite Online"
