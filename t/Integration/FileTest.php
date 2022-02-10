@@ -49,7 +49,7 @@ class FileTest extends TestCase {
 
 		$this->assertTrue($hasDeleted);
 		$this->assertDatabaseCount("files", 0);
-		$this->assertDeleted($present_file);
+		$this->assertModelMissing($present_file);
 	}
 
 	public function testRootTextAppend() {
