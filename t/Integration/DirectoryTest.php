@@ -32,9 +32,9 @@ class DirectoryTest extends TestCase {
 		$path = "/";
 		$root = Directory::factory()->setPath($path)->create();
 
-		// $this->expectException(RootViolationException::class);
-
 		$hasDeleted = Storage::deleteDirectory($path);
+
+		$this->assertFalse($hasDeleted);
 	}
 
 	public function testDeepPathsDeletion() {

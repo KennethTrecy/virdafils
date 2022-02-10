@@ -120,6 +120,13 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	public function deleteDirectory(string $path): void {
 		$directory_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
+		if ($directory_parts === PathHelper::resolvedSplit(
+			$this->configuration->get("root"),
+			$this->configuration
+		)) {
+			throw UnableToDeleteDirectory::atLocation($path, "It is the root directory.");
+		}
+
 		$directory = Directory::navigateByPathParts($directory_parts, $this->configuration)->first();
 
 		if (is_null($directory)) {
