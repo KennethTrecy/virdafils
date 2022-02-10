@@ -207,13 +207,13 @@ class VirdafilsAdapter implements FilesystemAdapter {
 	public function lastModified(string $path): FileAttributes {
 		$path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 		$present_closure = function($model) use ($path) {
-			return new FileAttributes($path, $model->content_size);
+			return new FileAttributes($path, null, null, $model->updated_at->timestamp);
 		};
 
 		return $this->whenDirectoryAsPartsExists(
 			$path_parts,
 			$present_closure,
-			function() use ($path_parts, $present_closure) {
+			function() use ($path, $path_parts, $present_closure) {
 				return $this->whenFileAsPartsExists(
 					$path_parts,
 					$present_closure,
