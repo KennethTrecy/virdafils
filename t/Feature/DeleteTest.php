@@ -14,9 +14,8 @@ class DeleteTest extends TestCase {
 		$path = "/present_a.txt";
 		$file = File::factory()->setPath($path)->create();
 
-		$hasDeleted = $adapter->delete($path);
+		$adapter->delete($path);
 
-		$this->assertTrue($hasDeleted);
 		$this->assertDatabaseCount("directories", 1);
 		$this->assertDatabaseCount("files", 0);
 	}
