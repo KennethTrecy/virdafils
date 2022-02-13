@@ -40,7 +40,7 @@ class ListContentsTest extends TestCase
                     $file->type
                 );
             })->toArray(),
-        ], $list);
+        ], iterator_to_array($list));
     }
 
     public function testRecursiveDirectoryList()
@@ -100,6 +100,6 @@ class ListContentsTest extends TestCase
             })->reduce(function ($previousDirectories, $currentDirectories) {
                 return $previousDirectories->merge($currentDirectories);
             }, collect([]))->toArray(),
-        ], $list);
+        ], iterator_to_array($list));
     }
 }
