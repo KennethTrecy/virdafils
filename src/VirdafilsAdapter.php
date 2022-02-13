@@ -19,6 +19,7 @@ use KennethTrecy\Virdafils\Util\PathHelper;
 use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\UnableToDeleteDirectory;
 use KennethTrecy\Virdafils\Util\GeneralHelper;
+use League\Flysystem\UnableToRetrieveMetadata;
 
 /**
  * Provides the adapter to CRUD file(s) from/to database.
@@ -124,8 +125,8 @@ class VirdafilsAdapter implements FilesystemAdapter
     {
         $this->whenFileExists($path, function ($file, $resolved_path) {
             return $file->delete();
-        }, function () use ($path) {
-            throw UnableToDeleteFile::atLocation($path, "There is a problem in database.");
+        }, function () {
+            return;
         });
     }
 
@@ -209,6 +210,10 @@ class VirdafilsAdapter implements FilesystemAdapter
         $path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
         return $this->whenFileAsPartsExists($path_parts, function ($file) use ($path) {
+            if (is_null($file->type)) {
+                throw UnableToRetrieveMetadata::mimeType($path, "File has an unknown MIME type.");
+            }
+
             return new FileAttributes($path, null, null, null, $file->type);
         }, function () use ($path) {
             throw UnableToRetrieveMetadata::mimeType($path, "File does not exists.");
@@ -222,7 +227,7 @@ class VirdafilsAdapter implements FilesystemAdapter
         return $this->whenFileAsPartsExists($path_parts, function ($file) use ($path) {
             return new FileAttributes($path, $file->content_size);
         }, function () use ($path) {
-            throw UnableToRetrieveMetadata::size($path, "File does not exists.");
+            throw UnableToRetrieveMetadata::fileSize($path, "File does not exists.");
         });
     }
 
@@ -241,7 +246,10 @@ class VirdafilsAdapter implements FilesystemAdapter
                     $path_parts,
                     $present_closure,
                     function () use ($path) {
-                        throw UnableToRetrieveMetadata::size($path, "Path does not exists.");
+                        throw UnableToRetrieveMetadata::lastModified(
+                            $path,
+                            "Path does not exists."
+                        );
                     }
                 );
             }
@@ -250,53 +258,39 @@ class VirdafilsAdapter implements FilesystemAdapter
 
     public function listContents(string $directory, $recursive = true): iterable
     {
-        return $this->whenDirectoryExists(
+        yield from $this->whenDirectoryExists(
             $directory,
             function ($directory, $resolved_path, $resolved_path_parts) use ($recursive) {
                 $directories = collect([ [ $resolved_path_parts, $directory ] ]);
-                $result = collect([]);
-
                 while ($directories->count() > 0) {
                     [ $local_path_parts, $directory ] = $directories->shift();
-                    $child_directories = $directory->childDirectories()->get()
-                        ->map(function ($child_directory) use (
-                            $recursive,
-                            $local_path_parts,
-                            &$directories
-                        ) {
-                            $path_parts = [ ...$local_path_parts, $child_directory->name ];
+                    $child_directories = $directory->childDirectories()->get();
+                    foreach ($child_directories as $child_directory) {
+                        $path_parts = [ ...$local_path_parts, $child_directory->name ];
 
-                            if ($recursive) {
-                                $directories->push([ $path_parts, $child_directory ]);
-                            }
+                        if ($recursive) {
+                            $directories->push([ $path_parts, $child_directory ]);
+                        }
 
-                            return new DirectoryAttributes(
-                                PathHelper::join($path_parts),
-                                $child_directory->visibility,
-                                $child_directory->updated_at->timestamp
-                            );
-                        });
+                        yield new DirectoryAttributes(
+                            PathHelper::join($path_parts),
+                            $child_directory->visibility,
+                            $child_directory->updated_at->timestamp
+                        );
+                    }
 
-                    $child_files = $directory
-                        ->files()
-                        ->get()
-                        ->map(function ($file) use ($local_path_parts) {
-                            $name = $file->name;
-                            $metadata = new FileAttributes(
-                                PathHelper::join([ ...$local_path_parts, $name ]),
-                                $file->content_size,
-                                $file->visibility,
-                                $file->updated_at->timestamp,
-                                $file->type
-                            );
-
-                            return $metadata;
-                        });
-
-                    $result = $result->merge($child_directories)->merge($child_files);
+                    $child_files = $directory->files()->get();
+                    foreach ($child_files as $child_file) {
+                        $name = $child_file->name;
+                        yield new FileAttributes(
+                            PathHelper::join([ ...$local_path_parts, $name ]),
+                            $child_file->content_size,
+                            $child_file->visibility,
+                            $child_file->updated_at->timestamp,
+                            $child_file->type
+                        );
+                    }
                 }
-
-                return $result->toArray();
             },
             function () {
                 throw UnableToRetrieveMetadata::size($path, "Path does not exists.");
@@ -328,8 +322,7 @@ class VirdafilsAdapter implements FilesystemAdapter
         }, function () use ($old_path, $new_path) {
             throw UnableToMoveFile::fromLocationTo(
                 $old_path,
-                $new_path,
-                "File does not exists."
+                $new_path
             );
         });
     }
@@ -338,12 +331,12 @@ class VirdafilsAdapter implements FilesystemAdapter
     {
         try {
             $stream = $this->readStream($old_path);
+            $configuration = $configuration->extend([ "visibility" => "public" ]);
             $this->writeStream($new_path, $stream, $configuration);
         } catch (FilesystemException $error) {
             throw UnableToCopyFile::fromLocationTo(
                 $old_path,
                 $new_path,
-                "This is probably a problem in the database",
                 $error
             );
         }
@@ -471,7 +464,7 @@ class VirdafilsAdapter implements FilesystemAdapter
     protected function whenDirectoryAsPartsExists(
         $resolved_path_parts,
         $present_closure,
-        $absent_closure = null
+        $absent_closure
     ) {
         return $this->whenModelExists(
             $resolved_path_parts,
@@ -490,7 +483,9 @@ class VirdafilsAdapter implements FilesystemAdapter
             $resolved_path_parts,
             File::navigateByPathParts($resolved_path_parts),
             $present_closure,
-            $absent_closure
+            $absent_closure ?? function () use ($path) {
+                throw UnableToReadFile::fromLocation($path, "The file does not exists.");
+            }
         );
     }
 
@@ -498,16 +493,11 @@ class VirdafilsAdapter implements FilesystemAdapter
         $resolved_path_parts,
         $builder,
         $present_closure,
-        $absent_closure = null
+        $absent_closure
     ) {
         $model = $builder->first();
         if (is_null($model)) {
-            if (is_null($absent_closure)) {
-                // TODO: Throw error when file/directory not found
-                return false;
-            } else {
-                return $absent_closure($resolved_path_parts, $builder);
-            }
+            return $absent_closure($resolved_path_parts, $builder);
         } else {
             $resolved_path =  PathHelper::join($resolved_path_parts);
             return $present_closure($model, $resolved_path, $resolved_path_parts);
