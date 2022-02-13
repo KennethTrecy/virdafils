@@ -4,19 +4,21 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use League\Flysystem\Config;
-use KennethTrecy\Virdafils\VirdafilsAdapter;
 use KennethTrecy\Virdafils\Node\File;
 use KennethTrecy\Virdafils\Node\Directory;
+use KennethTrecy\Virdafils\VirdafilsAdapter;
 
-class DeleteTest extends TestCase {
-	public function testRootFileDeletion() {
-		$adapter = new VirdafilsAdapter([]);
-		$path = "/present_a.txt";
-		$file = File::factory()->setPath($path)->create();
+class DeleteTest extends TestCase
+{
+    public function testRootFileDeletion()
+    {
+        $adapter = new VirdafilsAdapter([]);
+        $path = "/present_a.txt";
+        $file = File::factory()->setPath($path)->create();
 
-		$adapter->delete($path);
+        $adapter->delete($path);
 
-		$this->assertDatabaseCount("directories", 1);
-		$this->assertDatabaseCount("files", 0);
-	}
+        $this->assertDatabaseCount("directories", 1);
+        $this->assertDatabaseCount("files", 0);
+    }
 }

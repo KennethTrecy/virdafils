@@ -2,31 +2,35 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use KennethTrecy\Virdafils\VirdafilsServiceProvider;
 
-class TestCase extends \Orchestra\Testbench\TestCase {
-	use RefreshDatabase;
-	use WithFaker;
+class TestCase extends \Orchestra\Testbench\TestCase
+{
+    use RefreshDatabase;
+    use WithFaker;
 
-	protected $loadEnvironmentVariables = true;
+    protected $loadEnvironmentVariables = true;
 
-	protected function defineEnvironment($app) {
-		$app["config"]->set("filesystems.disks.virdafils", [
-			"driver" => "virdafils",
-			"root" => "/",
-			"visbility" => "private"
-		]);
-	}
+    protected function defineEnvironment($app)
+    {
+        $app["config"]->set("filesystems.disks.virdafils", [
+            "driver" => "virdafils",
+            "root" => "/",
+            "visbility" => "private"
+        ]);
+    }
 
-	protected function getPackageProviders($app) {
-		return [
-			VirdafilsServiceProvider::class
-		];
-	}
+    protected function getPackageProviders($app)
+    {
+        return [
+            VirdafilsServiceProvider::class
+        ];
+    }
 
-	protected function defineDatabaseMigrations() {
-		$this->loadLaravelMigrations();
-	}
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadLaravelMigrations();
+    }
 }
