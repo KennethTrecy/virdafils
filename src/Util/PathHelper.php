@@ -23,7 +23,7 @@ class PathHelper
         $filtered_names = array_filter($names, function ($name) {
             return $name !== "" && $name !== static::SEPARATOR;
         });
-        return static::SEPARATOR.implode(static::SEPARATOR, $filtered_names);
+        return implode(static::SEPARATOR, $filtered_names);
     }
 
     /**
