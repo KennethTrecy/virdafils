@@ -26,6 +26,7 @@
 	},
 	"require-dev": {
 		"laravel/framework": "^9.0",
+		"league/flysystem-adapter-test-utilities": "^3.0",
 		"orchestra/testbench": "^7.0",
 		"phpunit/phpunit": "^9.5"
 	},
