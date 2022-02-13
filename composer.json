@@ -49,8 +49,11 @@
 		}
 	},
 	"scripts": {
-		"test:offline": [
-			"./vendor/bin/phpunit --testsuite Unit,Feature,Integration"
+		"test:offline:fast": [
+			"./vendor/bin/phpunit --testsuite Unit,Feature"
+		],
+		"test:offline:slow": [
+			"./vendor/bin/phpunit --testsuite Integration"
 		],
 		"test:online": [
 			"./vendor/bin/phpunit --testsuite Online"
