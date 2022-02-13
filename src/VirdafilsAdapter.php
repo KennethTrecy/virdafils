@@ -106,7 +106,9 @@ class VirdafilsAdapter implements FilesystemAdapter {
 			}
 
 			return $contents;
-		});
+		}, function() use ($path) {
+            throw UnableToReadFile::fromLocation($path, "The file does not exists.");
+        });
 	}
 
 	public function delete(string $path): void {
