@@ -355,7 +355,7 @@ class VirdafilsAdapter implements FilesystemAdapter
     {
         $resolved_path = PathHelper::resolve($path, $this->configuration);
 
-        return route("verdafils.stream", [
+        return route("virdafils.stream", [
             "path" => ltrim($resolved_path, PathHelper::ABSOLUTE_ROOT)
         ]);
     }
@@ -374,7 +374,7 @@ class VirdafilsAdapter implements FilesystemAdapter
     {
         $resolved_path = PathHelper::resolve($path, $this->configuration);
 
-        return URL::temporarySignedRoute("verdafils.temporary.stream", $expiration, [
+        return URL::temporarySignedRoute("virdafils.temporary.stream", $expiration, [
             "path" => ltrim($resolved_path, PathHelper::ABSOLUTE_ROOT)
         ]);
     }

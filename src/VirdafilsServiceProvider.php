@@ -32,7 +32,7 @@ class VirdafilsServiceProvider extends ServiceProvider
                 return Storage::download($path);
             })
             ->where("path", ".+")
-            ->name("verdafils.stream");
+            ->name("virdafils.stream");
 
             Route::get("/temporary/storage/{path}", function (Request $request, string $path) {
                 if ($request->hasValidSignature()) {
@@ -42,7 +42,7 @@ class VirdafilsServiceProvider extends ServiceProvider
                 abort(401);
             })
             ->where("path", ".+")
-            ->name("verdafils.temporary.stream");
+            ->name("virdafils.temporary.stream");
         });
     }
 }

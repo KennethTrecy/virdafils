@@ -116,7 +116,7 @@ class FileTest extends TestCase
 
         $url = Storage::url($path);
 
-        $this->assertEquals(route("verdafils.stream", [
+        $this->assertEquals(route("virdafils.stream", [
             "path" => ltrim($path, PathHelper::ABSOLUTE_ROOT)
         ]), $url);
     }
@@ -129,7 +129,7 @@ class FileTest extends TestCase
 
         $url = Storage::temporaryUrl($path, $expiration);
 
-        $this->assertEquals(URL::temporarySignedRoute("verdafils.temporary.stream", $expiration, [
+        $this->assertEquals(URL::temporarySignedRoute("virdafils.temporary.stream", $expiration, [
             "path" => ltrim($path, PathHelper::ABSOLUTE_ROOT)
         ]), $url);
     }
