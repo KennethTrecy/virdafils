@@ -26,4 +26,4 @@ jobs:
     - name: Install dependencies
       run: composer install --quiet --no-ansi --no-interaction --no-progress
     - name: Run tests
-      run: composer run test:offline:fast
+      run: composer run test:full
