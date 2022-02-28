@@ -36,8 +36,11 @@ The repository was based from [`plugin`] branch of [Web Template].
    }
    ```
 2. Run `composer install`
-3. Run `php artisan migrate:fresh`
-4. Add the disk configuration to your `config/filesystems.php`:
+3. Run `php artisan vendor:publish --provider="\KennethTrecy\Virdafils\VirdafilsServiceProvider"` or
+   `php artisan vendor:publish --provider="\\KennethTrecy\\Virdafils\\VirdafilsServiceProvider"`
+   depending on your OS.
+4. Run `php artisan migrate:fresh`
+5. Add the disk configuration to your `config/filesystems.php`:
    ```
    return [
       // other options...
@@ -55,7 +58,7 @@ The repository was based from [`plugin`] branch of [Web Template].
       // other options...
    ]
    ```
-5. (Optional) Specify the default disk in your `.env`:
+6. (Optional) Specify the default disk in your `.env`:
    ```
    FILESYSTEM_DRIVER=virdafils
    ```
