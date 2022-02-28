@@ -16,6 +16,12 @@ class VirdafilsServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__."/../database/migrations");
 
+        $configuration = __DIR__ . "/../config/virdafils.php";
+        $this->mergeConfigFrom($configuration, "virdafils");
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$configuration => config_path("virdafils.php")], "virdafils");
+        }
+
         Storage::extend("virdafils", function ($app, $configuration) {
             $configuration = array_merge(GeneralHelper::$fallback, $configuration);
 
@@ -27,7 +33,8 @@ class VirdafilsServiceProvider extends ServiceProvider
             );
         });
 
-        Route::middleware("web")->group(function () {
+        Route::middleware(config("virdafils.middleware"))
+        ->group(function () {
             Route::get("/storage/{path}", function (string $path) {
                 return Storage::download($path);
             })
