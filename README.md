@@ -83,5 +83,6 @@ PRs are welcome!
 ## Author
 Virdafils was created by Kenneth Trecy Tobias.
 
-[`plugin`]: https://github.com/KennethTrecy/web_template/tree/plugin [Web Template]:
-http://github.com/KennethTrecy/web_template [Laravel Framework]: https://laravel.com
+[`plugin`]: https://github.com/KennethTrecy/web_template/tree/plugin
+[Web Template]: http://github.com/KennethTrecy/web_template
+[Laravel Framework]: https://laravel.com
