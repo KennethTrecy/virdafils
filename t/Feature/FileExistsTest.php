@@ -9,30 +9,6 @@ use KennethTrecy\Virdafils\VirdafilsAdapter;
 
 class FileExistsTest extends TestCase
 {
-    public function testRootDirectoryPresence()
-    {
-        $adapter = new VirdafilsAdapter([]);
-        $path = "/";
-        $root = Directory::factory()->setPath($path)->create();
-
-        $isPresent = $adapter->fileExists($path);
-
-        $this->assertTrue($isPresent);
-        $this->assertDatabaseCount("directories", 1);
-    }
-
-    public function testSubdirectoryPresence()
-    {
-        $adapter = new VirdafilsAdapter([]);
-        $path = "/a";
-        $subdirectory = Directory::factory()->setPath($path)->create();
-
-        $isPresent = $adapter->fileExists($path);
-
-        $this->assertTrue($isPresent);
-        $this->assertDatabaseCount("directories", 2);
-    }
-
     public function testSubdirectoryAbsence()
     {
         $adapter = new VirdafilsAdapter([]);

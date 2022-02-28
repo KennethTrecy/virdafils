@@ -39,8 +39,14 @@ class VirdafilsAdapter implements FilesystemAdapter
     {
         $path_parts = PathHelper::resolvedSplit($path, $this->configuration);
 
-        return Directory::navigateByPathParts($path_parts, $this->configuration)->exists()
-            ||	File::navigateByPathParts($path_parts, $this->configuration)->exists();
+        return File::navigateByPathParts($path_parts, $this->configuration)->exists();
+    }
+
+    public function directoryExists(string $path): bool
+    {
+        $path_parts = PathHelper::resolvedSplit($path, $this->configuration);
+
+        return Directory::navigateByPathParts($path_parts, $this->configuration)->exists();
     }
 
     public function write(string $path, string $contents, Config $configuration): void
