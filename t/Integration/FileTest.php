@@ -66,11 +66,10 @@ class FileTest extends TestCase
 
         $this->assertTrue($hasUpdated);
         $this->assertDatabaseCount("files", 1);
-        // TODO: Make the test platform-agnostic
         $this->assertDatabaseHas("files", [
             "name" => basename($path),
             "type" => "text/plain",
-            "contents" => base64_encode("$present_file->contents\r\n$content_to_append")
+            "contents" => base64_encode(Storage::get($path))
         ]);
     }
 
@@ -84,11 +83,10 @@ class FileTest extends TestCase
 
         $this->assertTrue($hasUpdated);
         $this->assertDatabaseCount("files", 1);
-        // TODO: Make the test platform-agnostic
         $this->assertDatabaseHas("files", [
             "name" => basename($path),
             "type" => "text/plain",
-            "contents" => base64_encode("$content_to_prepend\r\n$present_file->contents")
+            "contents" => base64_encode(Storage::get($path))
         ]);
     }
 
