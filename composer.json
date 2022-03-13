@@ -20,7 +20,7 @@
 		"illuminate/filesystem": "^9.0",
 		"illuminate/http": "^9.0",
 		"illuminate/support": "^9.0",
-		"kennethtrecy/elomocato": "^0.3.0",
+		"kennethtrecy/elomocato": "^0.3|^0.4",
 		"league/flysystem": "^3.0",
 		"league/mime-type-detection": "^1.9"
 	},
