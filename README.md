@@ -3,7 +3,7 @@ Virdafils is a file storage driver for [Laravel Framework]. This driver allows t
 treat directories/files as records in a database.
 
 ## Origin
-The repository was based from [`plugin`] branch of [Web Template].
+Some parts of the repository was based from [`plugin`] branch of [Web Template].
 
 ## Installation
 1. Put the following information in the your `composer.json`:
