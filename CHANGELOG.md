@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.1
+- Applied some updates from the template.
+- Allowed higher versions of some dependencies.
+
 ## v0.4.0
 - Upgraded the interface to check if directory exists
 - Fix the name of the routes.
