@@ -1,3 +1,12 @@
+<!-- [![Web Front-end Tests](https://img.shields.io/github/actions/workflow/status/KennethTrecy/web_template/front-end.yml?style=for-the-badge)](https://github.com/KennethTrecy/web_template/actions/workflows/:workflow-filename.yml) -->
+![GitHub lines](https://img.shields.io/github/license/KennethTrecy/web_template?style=for-the-badge)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/KennethTrecy/web_template?style=for-the-badge&display_name=tag&sort=semver)
+![GitHub closed issues count](https://img.shields.io/github/issues-closed/KennethTrecy/web_template?style=for-the-badge)
+![GitHub pull request count](https://img.shields.io/github/issues-pr-closed/KennethTrecy/web_template?style=for-the-badge)
+<!-- ![Commits since latest version](https://img.shields.io/github/commits-since/KennethTrecy/web_template/latest?style=for-the-badge) -->
+![Lines of code](https://img.shields.io/tokei/lines/github/KennethTrecy/web_template?style=for-the-badge)
+![GitHub code size in bytes](https://img.shields.io/github/repo-size/KennethTrecy/web_template?style=for-the-badge)
+
 # VirDaFils (Virtual Database Filesystem)
 Virdafils is a file storage driver for [Laravel Framework]. This driver allows the developer to
 treat directories/files as records in a database.
@@ -5,7 +14,9 @@ treat directories/files as records in a database.
 ## Origin
 Some parts of the repository was based from [`plugin`] branch of [Web Template].
 
-## Installation
+## Usage
+
+### Installation
 1. Put the following information in the your `composer.json`:
    ```
    {
@@ -18,7 +29,6 @@ Some parts of the repository was based from [`plugin`] branch of [Web Template].
       },
 
       // Your other properties like require-dev, autoload, etc...
-
       // Add the repository to instruct where to find the package
       "repositories": [
          {
@@ -26,8 +36,6 @@ Some parts of the repository was based from [`plugin`] branch of [Web Template].
             "url": "https://raw.githubusercontent.com/KennethTrecy/PHP_packages/master"
          }
       ],
-
-
       "config": {
          // Other configurations here...
 
@@ -63,7 +71,7 @@ Some parts of the repository was based from [`plugin`] branch of [Web Template].
    FILESYSTEM_DRIVER=virdafils
    ```
 
-## Documentation
+### Documentation
 You can generate the documentation offline using
 [phpDocumentor](https://docs.phpdoc.org/guide/getting-started/installing.html).
 1. Choose one of the installation options of
@@ -74,6 +82,31 @@ You can generate the documentation offline using
    option.
 5. Visit the [hidden_docs/index.html](hidden_docs/index.html) in your preferred browser.
 
+### Initialization
+If you want to contribute, the repository should be initialized to adhere in [Conventional Commits
+specification] for organize commits and automated generation of change log.
+
+#### Prerequisites
+- [Node.js and NPM]
+- [pnpm] (optional)
+
+#### Instructions
+By running the command below, all your commits will be linted to follow the [Conventional Commits
+specification].
+```
+$ npm install
+```
+
+Or if you have installed [pnpm], run the following command:
+```
+$ pnpm install
+```
+
+To generate the change log automatically, run the command below:
+```
+$ npx changelogen --from=[tag name or branch name or commit itself] --to=master
+```
+
 ## Notes
 This is a newly-created project which may have bugs. If you found one, please file an issue.
 
@@ -83,9 +116,20 @@ Use this package's v0.2.1 is compatible with version 8. However, there are may s
 
 PRs are welcome!
 
+### License
+The repository is licensed under [MIT].
+
+### Want to contribute?
+Read the [contributing guide] for different ways to contribute in the project.
+
 ## Author
 Virdafils was created by Kenneth Trecy Tobias.
 
 [`plugin`]: https://github.com/KennethTrecy/web_template/tree/plugin
 [Web Template]: http://github.com/KennethTrecy/web_template
 [Laravel Framework]: https://laravel.com
+[MIT]: https://github.com/KennethTrecy/web_template/blob/master/LICENSE
+[Node.js and NPM]: https://nodejs.org/en/
+[pnpm]: https://pnpm.io/installation
+[Conventional Commits specification]: https://www.conventionalcommits.org/en/v1.0.0/
+[contributing guide]: ./CONTRIBUTING.md
