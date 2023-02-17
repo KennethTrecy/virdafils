@@ -122,7 +122,7 @@ The repository is licensed under [MIT].
 ### Want to contribute?
 Read the [contributing guide] for different ways to contribute in the project.
 
-## Author
+### Author
 Virdafils was created by Kenneth Trecy Tobias.
 
 [`plugin`]: https://github.com/KennethTrecy/web_template/tree/plugin
