@@ -86,9 +86,9 @@ class FullTest extends TestCase
         static::$tester->overwriting_a_file();
     }
 
-    public function test_deleting_a_file()
+    public function test_a_file_exists_only_when_it_is_written_and_not_deleted()
     {
-        static::$tester->deleting_a_file();
+        static::$tester->a_file_exists_only_when_it_is_written_and_not_deleted();
     }
 
     public function test_listing_contents_shallow()
