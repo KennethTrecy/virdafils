@@ -15,7 +15,8 @@ on:
 
 jobs:
   core_back-end_tests:
-    runs-on: ubuntu-lateststrategy:
+    runs-on: ubuntu-latest
+    strategy:
       matrix:
         php-version: [ 8.0.2, 8.1 ]
     steps:
