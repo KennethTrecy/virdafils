@@ -17,7 +17,7 @@ Some parts of the repository was based from [`plugin`] branch of [Web Template].
 ## Usage
 
 ### Installation
-1. Put the following information in the your `composer.json`:
+1. Put the following information in your `composer.json`:
    ```
    {
       // Your specified properties like name, type, license, etc...
@@ -108,11 +108,11 @@ $ npx changelogen --from=[tag name or branch name or commit itself] --to=master
 ```
 
 ## Notes
-This is a newly-created project which may have bugs. If you found one, please file an issue.
+If you found a bug, please file an issue.
 
 Current version of this package is compatible with [Laravel Framework] version 9 and above only.
 
-Use this package's v0.2.1 is compatible with version 8. However, there are may stil be bugs.
+Use this package's v0.2.1 is compatible with version 8. However, there are may still be bugs.
 
 PRs are welcome!
 
