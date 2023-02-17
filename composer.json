@@ -15,20 +15,20 @@
 	],
 	"require": {
 		"php": "^8.0.2",
-		"illuminate/contracts": "^9.0",
-		"illuminate/database": "^9.0",
-		"illuminate/filesystem": "^9.0",
-		"illuminate/http": "^9.0",
-		"illuminate/support": "^9.0",
+		"illuminate/contracts": "^9.0|^10.0",
+		"illuminate/database": "^9.0|^10.0",
+		"illuminate/filesystem": "^9.0|^10.0",
+		"illuminate/http": "^9.0|^10.0",
+		"illuminate/support": "^9.0|^10.0",
 		"kennethtrecy/elomocato": "^0.3|^0.4",
 		"league/flysystem": "^3.0",
 		"league/mime-type-detection": "^1.9"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.6",
-		"laravel/framework": "^9.0",
+		"laravel/framework": "^9.0|^10.0",
 		"league/flysystem-adapter-test-utilities": "^3.0",
-		"orchestra/testbench": "^7.0",
+		"orchestra/testbench": "^7.0|^8.0",
 		"phpunit/phpunit": "^9.5"
 	},
 	"repositories": [
